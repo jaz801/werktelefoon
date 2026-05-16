@@ -17,7 +17,7 @@ const indivisible = localFont({
 
 export const metadata: Metadata = {
   title: "De Werktelefoon",
-  description: "Hoe gaat het echt met je op het werk?",
+  description: "Hoe gaat het met je op het werk?",
 };
 
 export default function RootLayout({
@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="nl" className={`${newake.variable} ${indivisible.variable}`}>
-      <body className="min-h-screen antialiased">{children}</body>
+      <body className="min-h-[100dvh] antialiased">{children}</body>
     </html>
   );
 }

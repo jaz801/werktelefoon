@@ -1,12 +1,12 @@
-// Bug fix: N/A — hero with two circular portraits and photo upload card.
+// Hero: Jasper circle + Anique ring example (PNG as exported, no image processing).
 import Image from "next/image";
 import { PhotoCard } from "./PhotoCard";
 
 export function HeroSection() {
   return (
-    <section className="mx-auto flex w-full max-w-5xl flex-col items-center gap-8 px-4 py-4 md:flex-row md:items-start md:justify-center">
-      <div className="flex shrink-0 items-center gap-4 md:gap-6">
-        <div className="relative h-32 w-32 overflow-hidden rounded-full border-2 border-black sm:h-40 sm:w-40">
+    <section className="mx-auto flex w-full max-w-5xl flex-col items-center justify-center gap-6 px-1 sm:gap-8 md:flex-row md:items-start lg:items-center">
+      <div className="flex shrink-0 items-center justify-center gap-3 sm:gap-4 md:gap-6">
+        <div className="relative h-24 w-24 overflow-hidden rounded-full border-2 border-black sm:h-32 sm:w-32 md:h-40 md:w-40">
           <Image
             src="/jasperwerktelefoon.png"
             alt="Jasper werktelefoon"
@@ -15,13 +15,15 @@ export function HeroSection() {
             sizes="160px"
           />
         </div>
-        <div className="relative h-32 w-32 overflow-hidden rounded-full border-2 border-black sm:h-40 sm:w-40">
+        <div className="relative h-24 w-24 sm:h-32 sm:w-32 md:h-40 md:w-40">
           <Image
-            src="/werktelefoon2.jpg"
-            alt="Werktelefoon 2"
+            src="/werktelefoon-anique.png"
+            alt="Werktelefoon voorbeeld met ring"
             fill
-            className="object-cover"
+            className="object-contain"
             sizes="160px"
+            priority
+            unoptimized
           />
         </div>
       </div>

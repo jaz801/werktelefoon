@@ -1,5 +1,14 @@
-// Bug fix: N/A — canvas export so downloaded PNG matches on-screen ring overlay.
-import { buildCirclePath } from "./ringGeometry";
+// Export: matches preview — black frame, photo inside ring circle, ring + label on top.
+import type { DisplayLayout } from "./imageLayout";
+import {
+  buildTopArcPath,
+  getRingTextStyle,
+  RING_LABEL_FONT_EXPORT,
+  RING_STROKE_WIDTH_MIN,
+  RING_TEXT_COLORS,
+  type RingFontWeightKey,
+  type RingTextColorKey,
+} from "./ringGeometry";
 
 export type ExportRingOptions = {
   imageSrc: string;
@@ -12,6 +21,11 @@ export type ExportRingOptions = {
   text: string;
   fontFamily: string;
   fontSize?: number;
+  fontWeightKey?: RingFontWeightKey;
+  textColorKey?: RingTextColorKey;
+  strokeWidth?: number;
+  /** object-contain layout when exporting the preview frame */
+  displayLayout?: DisplayLayout;
 };
 
 export async function exportComposedImage(
@@ -27,8 +41,18 @@ export async function exportComposedImage(
     ringColor,
     text,
     fontFamily,
-    fontSize = Math.max(14, Math.round(ringRadius * 0.22)),
+    fontSize = 14,
+    fontWeightKey = "medium",
+    textColorKey = "black",
+    strokeWidth = RING_STROKE_WIDTH_MIN,
+    displayLayout,
   } = options;
+
+  const textFill = RING_TEXT_COLORS[textColorKey];
+  const textStyle = getRingTextStyle(fontWeightKey, fontSize);
+  const textStrokeAttrs = textStyle.textStroke
+    ? `stroke="${textFill}" stroke-width="${textStyle.textStroke}" paint-order="stroke fill"`
+    : "";
 
   const image = await loadImage(imageSrc);
   const canvas = document.createElement("canvas");
@@ -37,10 +61,34 @@ export async function exportComposedImage(
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Canvas niet beschikbaar");
 
-  ctx.drawImage(image, 0, 0, width, height);
+  ctx.fillStyle = "#000000";
+  ctx.fillRect(0, 0, width, height);
 
-  const pathD = buildCirclePath(ringCenterX, ringCenterY, ringRadius);
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><defs><path id="ring" d="${pathD}" fill="none"/></defs><circle cx="${ringCenterX}" cy="${ringCenterY}" r="${ringRadius}" fill="none" stroke="${ringColor}" stroke-width="10"/><text fill="#191919" font-family="${fontFamily}" font-size="${fontSize}" letter-spacing="0.5"><textPath href="#ring" startOffset="25%" text-anchor="middle">${escapeXml(text)}</textPath></text></svg>`;
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(ringCenterX, ringCenterY, ringRadius, 0, Math.PI * 2);
+  ctx.clip();
+
+  if (displayLayout) {
+    ctx.drawImage(
+      image,
+      displayLayout.offsetX,
+      displayLayout.offsetY,
+      displayLayout.displayWidth,
+      displayLayout.displayHeight,
+    );
+  } else {
+    ctx.drawImage(image, 0, 0, width, height);
+  }
+  ctx.restore();
+
+  const textPathD = buildTopArcPath(ringCenterX, ringCenterY, ringRadius);
+  const fontUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/fonts/indivisible.otf`
+      : "/fonts/indivisible.otf";
+  const labelFont = fontFamily || RING_LABEL_FONT_EXPORT;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><defs><style>@font-face{font-family:Indivisible;src:url("${fontUrl}") format("opentype");font-weight:400 900;font-style:normal;}</style><path id="ring" d="${textPathD}" fill="none"/></defs><circle cx="${ringCenterX}" cy="${ringCenterY}" r="${ringRadius}" fill="none" stroke="${ringColor}" stroke-width="${strokeWidth}"/><text fill="${textFill}" dominant-baseline="central" font-family="${labelFont}" font-size="${fontSize}" font-weight="${textStyle.fontWeight}" letter-spacing="0" ${textStrokeAttrs}><textPath href="#ring" startOffset="50%" text-anchor="middle">${escapeXml(text)}</textPath></text></svg>`;
 
   const overlay = await loadImage(
     `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`,

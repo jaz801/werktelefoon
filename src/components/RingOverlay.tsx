@@ -1,15 +1,27 @@
-// Bug fix: N/A — draggable SVG ring with curved Newake text over uploaded photo.
+// Label on the ring midline (top arc) so copy sits inside the colored stroke band.
 "use client";
 
 import { useCallback, useRef } from "react";
-import { buildCirclePath, clamp } from "@/lib/ringGeometry";
+import {
+  buildTopArcPath,
+  clamp,
+  getRingTextStyle,
+  RING_LABEL_FONT,
+  RING_TEXT_COLORS,
+  type RingFontWeightKey,
+  type RingTextColorKey,
+} from "@/lib/ringGeometry";
 
 type RingOverlayProps = {
   width: number;
   height: number;
   ringRadius: number;
+  fontSize: number;
+  strokeWidth: number;
   ringColor: string;
   text: string;
+  fontWeightKey: RingFontWeightKey;
+  textColorKey: RingTextColorKey;
   position: { x: number; y: number };
   onPositionChange: (pos: { x: number; y: number }) => void;
 };
@@ -18,11 +30,17 @@ export function RingOverlay({
   width,
   height,
   ringRadius,
+  fontSize,
+  strokeWidth,
   ringColor,
   text,
+  fontWeightKey,
+  textColorKey,
   position,
   onPositionChange,
 }: RingOverlayProps) {
+  const textFill = RING_TEXT_COLORS[textColorKey];
+  const textStyle = getRingTextStyle(fontWeightKey, fontSize);
   const dragging = useRef(false);
   const offset = useRef({ x: 0, y: 0 });
   const svgRef = useRef<SVGSVGElement>(null);
@@ -65,8 +83,7 @@ export function RingOverlay({
     (e.currentTarget as Element).releasePointerCapture(e.pointerId);
   }, []);
 
-  const pathD = buildCirclePath(position.x, position.y, ringRadius);
-  const fontSize = Math.max(13, Math.round(ringRadius * 0.2));
+  const textPathD = buildTopArcPath(position.x, position.y, ringRadius);
 
   return (
     <svg
@@ -81,7 +98,7 @@ export function RingOverlay({
       onPointerLeave={onPointerUp}
     >
       <defs>
-        <path id="ring-text-path" d={pathD} fill="none" />
+        <path id="ring-text-path" d={textPathD} fill="none" />
       </defs>
       <circle
         cx={position.x}
@@ -89,16 +106,20 @@ export function RingOverlay({
         r={ringRadius}
         fill="none"
         stroke={ringColor}
-        strokeWidth={10}
+        strokeWidth={strokeWidth}
       />
       <text
-        fill="#191919"
-        style={{ fontFamily: "var(--font-newake), system-ui, sans-serif" }}
+        fill={textFill}
+        stroke={textStyle.textStroke ? textFill : undefined}
+        strokeWidth={textStyle.textStroke}
+        paintOrder={textStyle.textStroke ? "stroke fill" : undefined}
+        dominantBaseline="central"
+        style={{ fontFamily: RING_LABEL_FONT, fontWeight: textStyle.fontWeight }}
         fontSize={fontSize}
-        letterSpacing="0.5"
+        letterSpacing="0"
         pointerEvents="none"
       >
-        <textPath href="#ring-text-path" startOffset="22%" textAnchor="middle">
+        <textPath href="#ring-text-path" startOffset="50%" textAnchor="middle">
           {text}
         </textPath>
       </text>

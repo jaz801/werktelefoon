@@ -1,11 +1,14 @@
-// Bug fix: N/A — ring color swatches, copy toggle, and download export.
+// Layout: copy options in a column right of the preview; colors below the image.
 "use client";
 
 import {
   RING_COLORS,
   RING_COPY,
+  RING_TEXT_COLORS,
   type RingColorKey,
   type RingCopyKey,
+  type RingFontWeightKey,
+  type RingTextColorKey,
 } from "@/lib/ringGeometry";
 import { OutlineButton } from "./OutlineButton";
 
@@ -20,50 +23,89 @@ type RingControlsProps = {
 
 const COLOR_KEYS = Object.keys(RING_COLORS) as RingColorKey[];
 const COPY_KEYS = Object.keys(RING_COPY) as RingCopyKey[];
+const WEIGHT_OPTIONS = ["medium", "bold"] as const satisfies readonly RingFontWeightKey[];
+const TEXT_COLOR_KEYS = Object.keys(RING_TEXT_COLORS) as RingTextColorKey[];
 
-export function RingControls({
+export function RingColorSwatches({
   activeColor,
-  activeCopy,
   onColorChange,
-  onCopyChange,
-  onDownload,
-  downloading = false,
-}: RingControlsProps) {
+}: Pick<RingControlsProps, "activeColor" | "onColorChange">) {
   return (
-    <div className="mt-4 flex w-full flex-col items-center gap-4">
-      <div className="flex flex-wrap items-center justify-center gap-3">
-        {COLOR_KEYS.map((key) => (
+    <div className="flex flex-wrap items-center justify-center gap-3">
+      {COLOR_KEYS.map((key) => (
+        <button
+          key={key}
+          type="button"
+          aria-label={`Ringkleur ${key}`}
+          onClick={() => onColorChange(key)}
+          className={`h-10 w-10 rounded-full border-2 transition ${
+            activeColor === key ? "scale-110 border-black" : "border-transparent"
+          }`}
+          style={{ backgroundColor: RING_COLORS[key] }}
+        />
+      ))}
+    </div>
+  );
+}
+
+type RingCopySidebarProps = Pick<RingControlsProps, "activeCopy" | "onCopyChange"> & {
+  activeWeight: RingFontWeightKey;
+  onWeightChange: (key: RingFontWeightKey) => void;
+  activeTextColor: RingTextColorKey;
+  onTextColorChange: (key: RingTextColorKey) => void;
+};
+
+export function RingCopySidebar({
+  activeCopy,
+  onCopyChange,
+  activeWeight,
+  onWeightChange,
+  activeTextColor,
+  onTextColorChange,
+}: RingCopySidebarProps) {
+  return (
+    <div className="flex w-full max-w-[280px] shrink-0 flex-col gap-3 sm:w-[220px] sm:max-w-none">
+      {COPY_KEYS.map((key) => (
+        <OutlineButton
+          key={key}
+          onClick={() => onCopyChange(key)}
+          className={`w-full px-4 text-center font-[family-name:var(--font-newake)] leading-tight ${
+            activeCopy === key ? "bg-black/10" : ""
+          }`}
+        >
+          {RING_COPY[key]}
+        </OutlineButton>
+      ))}
+      <div className="flex justify-center gap-3">
+        {TEXT_COLOR_KEYS.map((key) => (
           <button
             key={key}
             type="button"
-            aria-label={`Ringkleur ${key}`}
-            onClick={() => onColorChange(key)}
+            aria-label={key === "black" ? "Zwarte tekst" : "Witte tekst"}
+            onClick={() => onTextColorChange(key)}
             className={`h-10 w-10 rounded-full border-2 transition ${
-              activeColor === key ? "scale-110 border-black" : "border-transparent"
+              activeTextColor === key
+                ? "scale-110 border-black"
+                : key === "white"
+                  ? "border-black/25"
+                  : "border-transparent"
             }`}
-            style={{ backgroundColor: RING_COLORS[key] }}
+            style={{ backgroundColor: RING_TEXT_COLORS[key] }}
           />
         ))}
       </div>
-      <div className="flex flex-wrap items-center justify-center gap-3">
-        {COPY_KEYS.map((key) => (
+      <div className="flex gap-2">
+        {WEIGHT_OPTIONS.map((key) => (
           <OutlineButton
             key={key}
-            onClick={() => onCopyChange(key)}
-            className={`max-w-[200px] text-center font-[family-name:var(--font-newake)] text-xs leading-tight sm:max-w-none sm:text-sm ${
-              activeCopy === key ? "bg-black/10" : ""
+            onClick={() => onWeightChange(key)}
+            className={`flex-1 px-3 text-center font-[family-name:var(--font-indivisible)] capitalize ${
+              activeWeight === key ? "bg-black/10" : ""
             }`}
           >
-            {RING_COPY[key]}
+            {key}
           </OutlineButton>
         ))}
-        <OutlineButton
-          onClick={onDownload}
-          disabled={downloading}
-          className="font-[family-name:var(--font-indivisible)]"
-        >
-          {downloading ? "Bezig…" : "Download"}
-        </OutlineButton>
       </div>
     </div>
   );
