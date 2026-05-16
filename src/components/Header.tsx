@@ -9,7 +9,7 @@ const CHECKOUT_URL =
 
 export function Header() {
   return (
-    <header className="relative mx-auto flex w-full max-w-6xl flex-col items-center gap-3 px-3 py-4 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:items-center sm:gap-2 sm:px-4 sm:py-6">
+    <header className="relative mx-auto flex w-full max-w-6xl flex-col items-center gap-8 px-3 py-4 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:items-center sm:gap-2 sm:px-4 sm:py-6">
       <div aria-hidden className="hidden min-w-0 sm:block" />
       <a
         href={SITE_URL}
