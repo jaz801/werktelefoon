@@ -1,5 +1,5 @@
-// Bug fix: logo centered via equal side columns; donate in right column (true horizontal center).
-// Logo links to werktelefoon.nl; donate CTA top-right.
+// Bug fix: mobile portrait — doneer CTA under logo; sm+ keeps logo centered with CTA top-right.
+// Logo links to werktelefoon.nl; donate CTA.
 import Image from "next/image";
 import { OutlineButton } from "./OutlineButton";
 
@@ -9,8 +9,8 @@ const CHECKOUT_URL =
 
 export function Header() {
   return (
-    <header className="relative mx-auto grid w-full max-w-6xl grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 py-4 sm:px-4 sm:py-6">
-      <div aria-hidden className="min-w-0" />
+    <header className="relative mx-auto flex w-full max-w-6xl flex-col items-center gap-3 px-3 py-4 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:items-center sm:gap-2 sm:px-4 sm:py-6">
+      <div aria-hidden className="hidden min-w-0 sm:block" />
       <a
         href={SITE_URL}
         target="_blank"
@@ -27,7 +27,7 @@ export function Header() {
           className="h-auto w-[min(280px,70vw)]"
         />
       </a>
-      <div className="flex min-w-0 justify-end">
+      <div className="flex w-full justify-center sm:min-w-0 sm:justify-end">
         <OutlineButton
           id="donate-cta"
           href={CHECKOUT_URL}
