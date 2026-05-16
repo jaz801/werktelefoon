@@ -1,14 +1,16 @@
-// Bug fix: no helper copy above swatches; LinkedIn preview shows full visual (contain).
+// Bug fix: static PNG visual only; clip lives on separate ShareClipPanel step.
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   exportShareVisualBlob,
+  getShareVisualDimensions,
   renderShareVisual,
-  SHARE_FORMAT_SPECS,
+  type InstagramAspectRatio,
   type ShareVisualFormat,
 } from "@/lib/shareVisualExport";
 import { type RingColorKey } from "@/lib/ringGeometry";
+import { InstagramAspectPicker } from "./InstagramAspectPicker";
 import { OutlineButton } from "./OutlineButton";
 import { RingColorSwatches } from "./RingControls";
 
@@ -20,16 +22,33 @@ type ShareVisualPanelProps = {
 const PREVIEW_MAX: Record<ShareVisualFormat, string> = {
   whatsapp: "max-w-[320px]",
   instagram: "max-w-[320px]",
-  linkedin: "max-w-full",
+  linkedin: "max-w-[320px]",
   tiktok: "max-w-[220px]",
 };
 
 export function ShareVisualPanel({ format, onBack }: ShareVisualPanelProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [color, setColor] = useState<RingColorKey>("blue");
+  const [instagramAspect, setInstagramAspect] =
+    useState<InstagramAspectRatio>("4:5");
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const isInstagram = format === "instagram";
+  const visualOptions = useMemo(
+    () => (isInstagram ? { instagramAspect } : {}),
+    [isInstagram, instagramAspect],
+  );
+
+  const dimensions = useMemo(
+    () => getShareVisualDimensions(format, visualOptions),
+    [format, visualOptions],
+  );
+
+  const previewAspect = {
+    aspectRatio: `${dimensions.width} / ${dimensions.height}`,
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -39,7 +58,7 @@ export function ShareVisualPanel({ format, onBack }: ShareVisualPanelProps) {
     setLoading(true);
     setError(null);
 
-    void renderShareVisual(format, color, canvas)
+    void renderShareVisual(format, color, canvas, visualOptions)
       .catch(() => {
         if (!cancelled) setError("Visual laden mislukt.");
       })
@@ -50,16 +69,18 @@ export function ShareVisualPanel({ format, onBack }: ShareVisualPanelProps) {
     return () => {
       cancelled = true;
     };
-  }, [format, color]);
+  }, [format, color, visualOptions]);
 
   const handleDownload = useCallback(async () => {
     setDownloading(true);
     setError(null);
     try {
-      const blob = await exportShareVisualBlob(format, color);
+      const blob = await exportShareVisualBlob(format, color, visualOptions);
+      const aspectSuffix =
+        isInstagram && instagramAspect === "1:1" ? "-1-1" : "";
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = `werktelefoon-${format}-${color}.png`;
+      link.download = `werktelefoon-${format}${aspectSuffix}-${color}.png`;
       link.click();
       URL.revokeObjectURL(link.href);
     } catch {
@@ -67,15 +88,17 @@ export function ShareVisualPanel({ format, onBack }: ShareVisualPanelProps) {
     } finally {
       setDownloading(false);
     }
-  }, [format, color]);
-
-  const spec = SHARE_FORMAT_SPECS[format];
-  const previewAspect = {
-    aspectRatio: `${spec.width} / ${spec.height}`,
-  };
+  }, [format, color, visualOptions, isInstagram, instagramAspect]);
 
   return (
     <div className="flex flex-col gap-4">
+      {isInstagram ? (
+        <InstagramAspectPicker
+          value={instagramAspect}
+          onChange={setInstagramAspect}
+        />
+      ) : null}
+
       <div className="relative flex min-h-[200px] items-center justify-center rounded-2xl border-2 border-black bg-white p-3">
         <canvas
           ref={canvasRef}
@@ -100,11 +123,11 @@ export function ShareVisualPanel({ format, onBack }: ShareVisualPanelProps) {
         </p>
       ) : null}
 
-      <div className="flex flex-col gap-3 sm:flex-row">
+      <div className="grid grid-cols-2 gap-3">
         <OutlineButton
           type="button"
           onClick={onBack}
-          className="w-full sm:flex-1"
+          className="w-full"
         >
           Terug
         </OutlineButton>
@@ -112,7 +135,7 @@ export function ShareVisualPanel({ format, onBack }: ShareVisualPanelProps) {
           type="button"
           onClick={() => void handleDownload()}
           disabled={loading || downloading}
-          className="w-full sm:flex-1"
+          className="w-full"
         >
           {downloading ? "Bezig…" : "Download visual"}
         </OutlineButton>

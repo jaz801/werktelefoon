@@ -1,4 +1,4 @@
-// Bug fix: removed helper descriptions; link copy for IG/TikTok/Snapchat; Snapchat modal added.
+// Bug fix: IG/TikTok/Snap — Download visual + Download clip buttons on message step; pre-rendered 7s clip.
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -9,6 +9,7 @@ import {
   getSnapchatShareMessage,
   getTikTokShareMessage,
   getWhatsAppShareMessage,
+  SHARE_SITE_URL,
   INSTAGRAM_WEB_URL,
   LINKEDIN_WEB_URL,
   SLACK_WEB_URL,
@@ -19,6 +20,7 @@ import {
 } from "@/lib/shareMessages";
 import type { ShareVisualFormat } from "@/lib/shareVisualExport";
 import { OutlineButton } from "./OutlineButton";
+import { ShareClipPanel } from "./ShareClipPanel";
 import { ShareVisualPanel } from "./ShareVisualPanel";
 
 export type SharePlatform =
@@ -34,7 +36,7 @@ type PlatformShareModalProps = {
   onClose: () => void;
 };
 
-type ModalStep = "message" | "visual";
+type ModalStep = "message" | "visual" | "clip";
 
 type OpenAction = { label: string; url: string };
 
@@ -43,6 +45,7 @@ type PlatformConfig = {
   visualTitle: string;
   openActions: OpenAction[];
   hasVisual: boolean;
+  hasClip: boolean;
   showLinkField: boolean;
   visualFormat?: ShareVisualFormat;
   textareaRows: number;
@@ -55,6 +58,7 @@ const PLATFORM_CONFIG: Record<SharePlatform, PlatformConfig> = {
     visualTitle: "Download visual",
     openActions: [{ label: "Open WhatsApp", url: WHATSAPP_WEB_URL }],
     hasVisual: true,
+    hasClip: false,
     showLinkField: false,
     visualFormat: "whatsapp",
     textareaRows: 9,
@@ -65,6 +69,7 @@ const PLATFORM_CONFIG: Record<SharePlatform, PlatformConfig> = {
     visualTitle: "Download visual",
     openActions: [{ label: "Open LinkedIn", url: LINKEDIN_WEB_URL }],
     hasVisual: true,
+    hasClip: false,
     showLinkField: false,
     visualFormat: "linkedin",
     textareaRows: 14,
@@ -75,6 +80,7 @@ const PLATFORM_CONFIG: Record<SharePlatform, PlatformConfig> = {
     visualTitle: "Download visual",
     openActions: [{ label: "Open Instagram", url: INSTAGRAM_WEB_URL }],
     hasVisual: true,
+    hasClip: true,
     showLinkField: true,
     visualFormat: "instagram",
     textareaRows: 10,
@@ -85,6 +91,7 @@ const PLATFORM_CONFIG: Record<SharePlatform, PlatformConfig> = {
     visualTitle: "Download visual",
     openActions: [{ label: "Open TikTok", url: TIKTOK_WEB_URL }],
     hasVisual: true,
+    hasClip: true,
     showLinkField: true,
     visualFormat: "tiktok",
     textareaRows: 10,
@@ -95,6 +102,7 @@ const PLATFORM_CONFIG: Record<SharePlatform, PlatformConfig> = {
     visualTitle: "Download visual",
     openActions: [{ label: "Open Snapchat", url: SNAPCHAT_WEB_URL }],
     hasVisual: true,
+    hasClip: true,
     showLinkField: true,
     visualFormat: "instagram",
     textareaRows: 10,
@@ -108,6 +116,7 @@ const PLATFORM_CONFIG: Record<SharePlatform, PlatformConfig> = {
       { label: "Open Teams", url: TEAMS_WEB_URL },
     ],
     hasVisual: false,
+    hasClip: false,
     showLinkField: false,
     textareaRows: 9,
     getMessage: getSlackTeamsShareMessage,
@@ -120,18 +129,13 @@ export function PlatformShareModal({
 }: PlatformShareModalProps) {
   const config = PLATFORM_CONFIG[platform];
   const [step, setStep] = useState<ModalStep>("message");
-  const [siteUrl, setSiteUrl] = useState("");
   const [copiedText, setCopiedText] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
 
-  useEffect(() => {
-    setSiteUrl(window.location.href);
-  }, []);
-
-  const message = useMemo(() => {
-    if (!siteUrl) return "";
-    return config.getMessage(siteUrl);
-  }, [siteUrl, config]);
+  const message = useMemo(
+    () => config.getMessage(SHARE_SITE_URL),
+    [config],
+  );
 
   const copyToClipboard = useCallback(async (text: string, which: "text" | "link") => {
     try {
@@ -156,14 +160,19 @@ export function PlatformShareModal({
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
-      if (step === "visual") setStep("message");
+      if (step === "visual" || step === "clip") setStep("message");
       else onClose();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [step, onClose]);
 
-  const title = step === "message" ? config.title : config.visualTitle;
+  const title =
+    step === "message"
+      ? config.title
+      : step === "clip"
+        ? "Download clip"
+        : config.visualTitle;
   const dialogId = `${platform}-share-title`;
 
   return (
@@ -176,7 +185,7 @@ export function PlatformShareModal({
     >
       <div
         className={`flex max-h-[min(92dvh,90vh)] w-full max-w-[100vw] flex-col gap-4 overflow-y-auto rounded-t-3xl border-2 border-black bg-[var(--bg)] p-4 shadow-lg sm:max-h-[90vh] sm:max-w-lg sm:rounded-3xl sm:p-6 ${
-          step === "visual" ? "md:max-w-xl" : ""
+          step === "visual" || step === "clip" ? "md:max-w-xl" : ""
         }`}
         onClick={(e) => e.stopPropagation()}
       >
@@ -206,7 +215,7 @@ export function PlatformShareModal({
               className="w-full resize-none rounded-2xl border-2 border-black bg-white px-4 py-3 font-[family-name:var(--font-indivisible)] text-base leading-relaxed text-[var(--text)] outline-none focus:ring-2 focus:ring-black/20"
             />
 
-            {config.showLinkField && siteUrl ? (
+            {config.showLinkField ? (
               <div className="flex flex-col gap-2">
                 <label className="font-[family-name:var(--font-indivisible)] text-sm font-semibold text-[var(--text)]">
                   Link
@@ -214,12 +223,12 @@ export function PlatformShareModal({
                 <div className="flex flex-col gap-2 sm:flex-row">
                   <input
                     readOnly
-                    value={siteUrl}
+                    value={SHARE_SITE_URL}
                     className="min-w-0 flex-1 rounded-2xl border-2 border-black bg-white px-4 py-2 font-[family-name:var(--font-indivisible)] text-base text-[var(--text)] outline-none"
                   />
                   <OutlineButton
                     type="button"
-                    onClick={() => void copyToClipboard(siteUrl, "link")}
+                    onClick={() => void copyToClipboard(SHARE_SITE_URL, "link")}
                     className="shrink-0 whitespace-nowrap"
                   >
                     {copiedLink ? "Gekopieerd!" : "Kopieer link"}
@@ -251,16 +260,34 @@ export function PlatformShareModal({
                 </OutlineButton>
               ))}
               {config.hasVisual && config.visualFormat ? (
-                <OutlineButton
-                  type="button"
-                  onClick={() => setStep("visual")}
-                  className="w-full"
+                <div
+                  className={`grid w-full gap-3 ${config.hasClip ? "grid-cols-2" : "grid-cols-1"}`}
                 >
-                  Download visual
-                </OutlineButton>
+                  <OutlineButton
+                    type="button"
+                    onClick={() => setStep("visual")}
+                    className="w-full"
+                  >
+                    Download visual
+                  </OutlineButton>
+                  {config.hasClip ? (
+                    <OutlineButton
+                      type="button"
+                      onClick={() => setStep("clip")}
+                      className="w-full"
+                    >
+                      Download clip
+                    </OutlineButton>
+                  ) : null}
+                </div>
               ) : null}
             </div>
           </>
+        ) : step === "clip" && config.visualFormat ? (
+          <ShareClipPanel
+            format={config.visualFormat}
+            onBack={() => setStep("message")}
+          />
         ) : config.visualFormat ? (
           <ShareVisualPanel
             format={config.visualFormat}

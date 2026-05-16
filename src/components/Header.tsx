@@ -1,5 +1,5 @@
-// Bug fix: header stacks on mobile so donate CTA does not overlap logo.
-// Logo links to werktelefoon.nl; donate CTA top-right on md+.
+// Bug fix: logo centered via equal side columns; donate in right column (true horizontal center).
+// Logo links to werktelefoon.nl; donate CTA top-right.
 import Image from "next/image";
 import { OutlineButton } from "./OutlineButton";
 
@@ -9,12 +9,13 @@ const CHECKOUT_URL =
 
 export function Header() {
   return (
-    <header className="relative mx-auto flex w-full max-w-6xl flex-col items-center gap-4 px-4 py-4 sm:py-6 md:block">
+    <header className="relative mx-auto grid w-full max-w-6xl grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 py-4 sm:px-4 sm:py-6">
+      <div aria-hidden className="min-w-0" />
       <a
         href={SITE_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--text)]"
+        className="block justify-self-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--text)]"
         aria-label="Ga naar De Werktelefoon website"
       >
         <Image
@@ -26,15 +27,17 @@ export function Header() {
           className="h-auto w-[min(280px,70vw)]"
         />
       </a>
-      <OutlineButton
-        id="donate-cta"
-        href={CHECKOUT_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="w-full max-w-xs font-[family-name:var(--font-indivisible)] text-base sm:max-w-sm md:absolute md:right-4 md:top-6 md:w-auto"
-      >
-        doneer €1,99
-      </OutlineButton>
+      <div className="flex min-w-0 justify-end">
+        <OutlineButton
+          id="donate-cta"
+          href={CHECKOUT_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="shrink-0 px-3 text-base sm:px-5 sm:text-lg"
+        >
+          doneer €1,99
+        </OutlineButton>
+      </div>
     </header>
   );
 }

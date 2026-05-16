@@ -86,6 +86,43 @@ export function drawCover(
   ctx.drawImage(source, dx, dy, drawW, drawH);
 }
 
+/** Bounding box of non-background pixels (text, icons, QR). */
+export function getContentBounds(
+  imageData: ImageData,
+  sourceBg: Rgb,
+  tolerance = 40,
+): { x: number; y: number; w: number; h: number } {
+  const { width, height, data } = imageData;
+  let minX = width;
+  let minY = height;
+  let maxX = 0;
+  let maxY = 0;
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const i = (y * width + x) * 4;
+      const px: Rgb = { r: data[i], g: data[i + 1], b: data[i + 2] };
+      if (colorDistance(px, sourceBg) > tolerance) {
+        minX = Math.min(minX, x);
+        minY = Math.min(minY, y);
+        maxX = Math.max(maxX, x);
+        maxY = Math.max(maxY, y);
+      }
+    }
+  }
+
+  if (maxX < minX || maxY < minY) {
+    return { x: 0, y: 0, w: width, h: height };
+  }
+
+  const pad = 36;
+  const x = Math.max(0, minX - pad);
+  const y = Math.max(0, minY - pad);
+  const w = Math.min(width - x, maxX - minX + 1 + pad * 2);
+  const h = Math.min(height - y, maxY - minY + 1 + pad * 2);
+  return { x, y, w, h };
+}
+
 /** Fit full image inside frame — nothing cropped (letterbox uses fillColor). */
 export function drawContain(
   ctx: CanvasRenderingContext2D,
@@ -95,6 +132,8 @@ export function drawContain(
   outW: number,
   outH: number,
   fillColor: string,
+  srcX = 0,
+  srcY = 0,
 ): void {
   ctx.fillStyle = fillColor;
   ctx.fillRect(0, 0, outW, outH);
@@ -103,5 +142,5 @@ export function drawContain(
   const drawH = srcH * scale;
   const dx = (outW - drawW) / 2;
   const dy = (outH - drawH) / 2;
-  ctx.drawImage(source, dx, dy, drawW, drawH);
+  ctx.drawImage(source, srcX, srcY, srcW, srcH, dx, dy, drawW, drawH);
 }

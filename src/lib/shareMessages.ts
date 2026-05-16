@@ -1,5 +1,8 @@
-// Bug fix: spelling/grammar pass on all platform share copy (LinkedIn, guerrilla, je kunt, meerdere).
+// Bug fix: share link uses campaign rebrand URL, not window.location (localhost in dev).
 // Share copy for social buttons; site URL injected at runtime where noted.
+
+/** Link shown in share modals and appended to copied messages. */
+export const SHARE_SITE_URL = "https://rebrand.ly/nf3lt1y";
 const SOCIAL_HASHTAG_COPY = `Hey,
 een vriendin van mij neemt deze week LinkedIn over met een guerrillacampagne om @Werktelefoon landelijk LIVE te krijgen.
 Je kunt mij helpen door dit bericht te delen in één of meerdere van je groepen op WhatsApp, Slack en Teams. #werktelefoon #guerrillacampagne #takeover #werkveranderaars #werkveranderaar`;
