@@ -1,0 +1,38 @@
+/* Design tokens: Werktelefoon brand colors and fonts */
+@import "tailwindcss";
+
+:root {
+  --bg: #fffcf6;
+  --pink: #eaa5c2;
+  --blue: #a4cae7;
+  --yellow: #fcf968;
+  --green: #bfdfc1;
+  --orange: #fcc955;
+  --text: #191919;
+  --border: #191919;
+  --background: var(--bg);
+  --foreground: var(--text);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-wt-pink: var(--pink);
+  --color-wt-blue: var(--blue);
+  --color-wt-yellow: var(--yellow);
+  --color-wt-green: var(--green);
+  --color-wt-orange: var(--orange);
+  --font-display: var(--font-newake);
+  --font-body: var(--font-indivisible);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-indivisible), system-ui, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-newake), system-ui, sans-serif;
+  font-weight: 400;
+}
