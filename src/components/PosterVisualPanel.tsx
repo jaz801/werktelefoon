@@ -1,4 +1,4 @@
-// Bug fix: removed helper text above poster color picker.
+// Bug fix: poster preview uses scaled canvas so PDF loads on mobile Safari.
 // Print flow — poster.pdf with brand BG color picker + download/print.
 "use client";
 
