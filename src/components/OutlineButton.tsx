@@ -1,6 +1,7 @@
+// Bug fix: bolder type + thicker border so CTAs stand out more (border-4, font-bold).
 // Bug fix: hover blue — removed bg-transparent (it blocked hover bg); rotate-2 = tilt right.
 // Bug fix: forwardRef for donate CTA jiggle (Web Animations API on mount).
-// Style: shared outline button — 30px radius, 24px type, 2px black border.
+// Style: shared outline button — 30px radius, 4px black border.
 "use client";
 
 import {
@@ -25,7 +26,7 @@ type LinkProps = BaseProps &
   AnchorHTMLAttributes<HTMLAnchorElement> & { href: string };
 
 const BASE_CLASS = [
-  "outline-btn inline-flex min-h-11 origin-center touch-manipulation items-center justify-center rounded-[30px] border-2 border-black px-4 py-2.5 text-center font-[family-name:var(--font-indivisible)] text-base leading-tight text-black sm:min-h-12 sm:px-5 sm:text-lg md:text-xl",
+  "outline-btn inline-flex min-h-12 origin-center touch-manipulation items-center justify-center rounded-[30px] border-4 border-black px-4 py-2.5 text-center font-[family-name:var(--font-indivisible)] text-base font-bold leading-tight text-black sm:min-h-[3.25rem] sm:px-5 sm:text-lg md:text-xl",
   "transition-[transform,background-color] duration-200 ease-out",
   "hover:rotate-2 hover:bg-[var(--blue)]",
   "active:rotate-2 active:bg-[var(--blue)]",
