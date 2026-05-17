@@ -1,4 +1,5 @@
 // Bug fix: N/A — root layout with brand fonts (Newake + Indivisible + Caveat handwritten) and Dutch locale.
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Caveat } from "next/font/google";
 import localFont from "next/font/local";
@@ -37,7 +38,10 @@ export default function RootLayout({
       lang="nl"
       className={`${newake.variable} ${indivisible.variable} ${caveat.variable}`}
     >
-      <body className="min-h-[100dvh] antialiased">{children}</body>
+      <body className="min-h-[100dvh] antialiased">
+        {children}
+        <SpeedInsights />
+      </body>
     </html>
   );
 }
