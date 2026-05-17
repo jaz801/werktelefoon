@@ -1,5 +1,5 @@
-// Bug fix: overflow visible so donate tooltip is not clipped on the right.
-// Header + intro copy (donate arrow removed).
+// Bug fix: overflow visible for header + intro layout.
+// Header + intro copy (donate CTA removed from header).
 import { Header } from "./Header";
 import { IntroCopy } from "./IntroCopy";
 

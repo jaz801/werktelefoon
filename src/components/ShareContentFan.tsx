@@ -1,3 +1,4 @@
+// Bug fix: fan stack colors roze / geel / blauw (middle card yellow, not green).
 // Bug fix: vertical offset applied in PhotoCard companion wrapper (inline marginTop).
 // Bug fix: fan stack height matches upload preview aspect so it centers on the foto card.
 "use client";
@@ -20,7 +21,7 @@ export function ShareContentFan() {
         aspectRatio: `${PREVIEW_WIDTH} / ${PREVIEW_HEIGHT}`,
         minHeight: `min(${PREVIEW_HEIGHT}px, calc((100vw - 3rem) * ${PREVIEW_HEIGHT} / ${PREVIEW_WIDTH}))`,
       }}
-      aria-label="Voorbeelden: roze visual, groene visual en blauwe video"
+      aria-label="Voorbeelden: roze visual, gele visual en blauwe video"
     >
       <div
         className={`absolute left-1/2 top-1/2 ${CARD_W}`}
@@ -42,7 +43,7 @@ export function ShareContentFan() {
           zIndex: 20,
         }}
       >
-        <ShareVisualCard color="green" />
+        <ShareVisualCard color="yellow" />
       </div>
 
       <div

@@ -1,4 +1,4 @@
-// Bug fix: IG/TikTok/Snap — Download visual + Download clip buttons on message step; pre-rendered 7s clip.
+// Bug fix: IG/TikTok/Snap/WA/LinkedIn — Download visual + Download clip on message step; pre-rendered 7s clip.
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -58,7 +58,7 @@ const PLATFORM_CONFIG: Record<SharePlatform, PlatformConfig> = {
     visualTitle: "Download visual",
     openActions: [{ label: "Open WhatsApp", url: WHATSAPP_WEB_URL }],
     hasVisual: true,
-    hasClip: false,
+    hasClip: true,
     showLinkField: false,
     visualFormat: "whatsapp",
     textareaRows: 9,
@@ -69,7 +69,7 @@ const PLATFORM_CONFIG: Record<SharePlatform, PlatformConfig> = {
     visualTitle: "Download visual",
     openActions: [{ label: "Open LinkedIn", url: LINKEDIN_WEB_URL }],
     hasVisual: true,
-    hasClip: false,
+    hasClip: true,
     showLinkField: false,
     visualFormat: "linkedin",
     textareaRows: 14,

@@ -1,4 +1,5 @@
 // Generates PNG frames for Remotion clip pre-render (blue theme, per platform size).
+// Bug fix: regenerate after public/share-visual.png (WhatsApp example) changes — npm run render:clips.
 import { createCanvas, loadImage } from "@napi-rs/canvas";
 import fs from "node:fs";
 import path from "node:path";

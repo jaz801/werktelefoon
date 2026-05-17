@@ -1,9 +1,8 @@
-// Bug fix: layout — Wat is de Werktelefoon CTA below platform button row (was under intro).
+// Bug fix: removed Wat is de Werktelefoon CTA below platform row.
 // Bug fix: Snapchat + Print modals; link copy for IG/TikTok/Snapchat.
 "use client";
 
 import { useState } from "react";
-import { IntroActions } from "./IntroActions";
 import { OutlineButton } from "./OutlineButton";
 import { PlatformShareModal, type SharePlatform } from "./PlatformShareModal";
 import { PrintShareModal } from "./PrintShareModal";
@@ -55,7 +54,6 @@ export function SocialButtons() {
           );
         })}
       </section>
-      <IntroActions />
       {openPlatform ? (
         <PlatformShareModal
           platform={openPlatform}

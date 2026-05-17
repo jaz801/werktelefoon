@@ -1,4 +1,5 @@
 // Remotion entry for pre-rendering share clips (npm run render:clips).
+// Bug fix: compositions match Instagram 4:5, 1:1, and TikTok 9:16 from public/clips/frames/.
 import { Composition } from "remotion";
 import { staticFile } from "remotion";
 import {

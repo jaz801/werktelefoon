@@ -1,4 +1,4 @@
-// Bug fix: share section — upload left, fanned pink / video / green cards right.
+// Bug fix: share section — upload left, fanned pink / yellow / blue (video) cards right.
 // Bug fix: #share-content scroll target for animated "content" link in intro copy.
 import { IntroSection } from "@/components/IntroSection";
 import { ShareContentGrid } from "@/components/ShareContentGrid";

@@ -1,6 +1,7 @@
-// Bug fix: TikTok 9:16 uses content-bounds + contain (same cut-off as Instagram 1:1 had with cover).
+// Bug fix: visual download uses public/share-visual.png (WhatsApp example); bump VISUAL_ASSET_VERSION on asset swap.
 // Recurring: platform "cover" crops QR/text — use vertical-fit or instagram-square instead.
 // Export share visual: BG color swap; per-platform dimensions.
+import { VISUAL_ASSET_VERSION } from "./visualAssetVersion";
 import { RING_COLORS, type RingColorKey } from "./ringGeometry";
 import {
   applyBackgroundColor,
@@ -12,7 +13,7 @@ import {
   type Rgb,
 } from "./visualColorReplace";
 
-export const SHARE_VISUAL_SRC = "/share-visual.png";
+export const SHARE_VISUAL_SRC = `/share-visual.png?v=${VISUAL_ASSET_VERSION}`;
 
 export const INSTAGRAM_VISUAL_WIDTH = 1080;
 export const INSTAGRAM_VISUAL_HEIGHT = 1350;
@@ -63,12 +64,21 @@ export const SHARE_FORMAT_SPECS: Record<ShareVisualFormat, FormatSpec> = {
   },
 };
 
+let cachedAssetVersion: string | null = null;
 let cachedImage: HTMLImageElement | null = null;
 let cachedSourceBg: ReturnType<typeof sampleSourceBackground> | null = null;
+
+function ensureShareVisualAssetCache(): void {
+  if (cachedAssetVersion === VISUAL_ASSET_VERSION) return;
+  cachedAssetVersion = VISUAL_ASSET_VERSION;
+  cachedImage = null;
+  cachedSourceBg = null;
+}
 
 async function getColoredSourceCanvas(
   colorKey: RingColorKey,
 ): Promise<HTMLCanvasElement> {
+  ensureShareVisualAssetCache();
   if (!cachedImage) {
     cachedImage = await loadImageElement(SHARE_VISUAL_SRC);
   }

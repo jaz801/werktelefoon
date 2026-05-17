@@ -1,4 +1,4 @@
-// Bug fix: clip step shows pre-rendered 7s MP4 (autoplay) + download next to visual flow.
+// Bug fix: clip step shows pre-rendered 7s MP4 (autoplay) + download; WA/LinkedIn use 4:5 clip, no aspect picker.
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -44,7 +44,7 @@ export function ShareClipPanel({ format, onBack }: ShareClipPanelProps) {
       const blob = await response.blob();
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = getPreRenderedClipDownloadName(variant);
+      link.download = getPreRenderedClipDownloadName(variant, format);
       link.click();
       URL.revokeObjectURL(link.href);
     } catch {
@@ -52,7 +52,7 @@ export function ShareClipPanel({ format, onBack }: ShareClipPanelProps) {
     } finally {
       setDownloading(false);
     }
-  }, [clipUrl, variant]);
+  }, [clipUrl, variant, format]);
 
   return (
     <div className="flex flex-col gap-4">

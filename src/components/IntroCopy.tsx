@@ -1,10 +1,7 @@
-// Bug fix: spelling/grammar pass on intro copy (Dank je wel, creëren, kunt, etc.).
-// Bug fix: "content" link scrolls to share section with animated underline.
-// Bug fix: layout — PhotoCard under challenge; Wat is de Werktelefoon moved below social row.
-// Bug fix: intro copy updated — werkend Nederland tone, liefde doorgeven, singular je/jou.
-// Intro copy above the hero images — thanks + ask to pass the word.
-import { ContentScrollLink } from "./ContentScrollLink";
+// Bug fix: intro copy — LinkedIn takeover narrative + Lees verder opens checkout.
+// Bug fix: removed inline content link; share copy lives in GuerrillaFollow challenge block.
 import { GuerrillaFollow } from "./GuerrillaFollow";
+import { ReadMoreButton } from "./ReadMoreButton";
 
 export function IntroCopy() {
   return (
@@ -12,25 +9,17 @@ export function IntroCopy() {
       id="intro-copy"
       className="relative z-10 mx-auto w-full max-w-2xl px-3 pb-6 pt-8 text-center font-[family-name:var(--font-indivisible)] text-base font-semibold leading-relaxed text-[var(--text)] sm:max-w-3xl sm:px-4 sm:pt-12 sm:text-lg md:pt-14 md:text-xl lg:max-w-4xl"
     >
-      <p>
-        Dank je wel dat je werkend Nederland wilt helpen. Zonder jou komen we er niet.
+      <p>Wanneer voelde je je voor het laatst écht goed op je werk?</p>
+      <p className="mt-3">De meeste mensen komen niet verder dan 5%.</p>
+      <p className="mt-3">
+        In 2030 valt 1 op de 4 werkenden om. Onder jongeren is dit al realiteit.
       </p>
       <p className="mt-3">
-        Om zoveel mogelijk momentum te creëren vragen we je om de liefde deze week
-        zoveel mogelijk door te geven.
+        Daarom nemen we deze week LinkedIn over. In 7 dagen zetten we samen met
+        100.000 werkveranderaars de lijnen van De Werktelefoon open. Voor €1,99
+        doe jij mee.
       </p>
-      <p className="mt-3">
-        Geweldig als je een bericht kunt sturen naar één of twee personen of in een
-        groep.
-      </p>
-      <p className="mt-3">
-        Kan werkend Nederland op jou rekenen?
-      </p>
-      <p className="mt-3">
-        Om het jou makkelijk te maken hebben we <ContentScrollLink />, berichten,
-        posts, een plaatje en video voor je klaarstaan die je op social media kunt
-        delen.
-      </p>
+      <ReadMoreButton />
       <GuerrillaFollow />
     </div>
   );

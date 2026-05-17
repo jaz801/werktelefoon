@@ -1,5 +1,6 @@
-// Bug fix: mobile Safari canvas max ~4096px — cap PDF scale; PNG fallback if PDF/worker fails.
+// Bug fix: poster download uses public/poster.pdf + PNG fallback; bump VISUAL_ASSET_VERSION on asset swap.
 // Recurring: poster PDF at scale 2 (3310×4680) breaks iOS; koffiezetapparaat + WC share poster.pdf page 1.
+import { VISUAL_ASSET_VERSION } from "./visualAssetVersion";
 import type { RingColorKey } from "./ringGeometry";
 import {
   applyBackgroundColor,
@@ -7,8 +8,8 @@ import {
   sampleSourceBackground,
 } from "./visualColorReplace";
 
-export const POSTER_PDF_SRC = "/poster.pdf";
-export const POSTER_PNG_FALLBACK_SRC = "/posters/poster.png";
+export const POSTER_PDF_SRC = `/poster.pdf?v=${VISUAL_ASSET_VERSION}`;
+export const POSTER_PNG_FALLBACK_SRC = `/posters/poster.png?v=${VISUAL_ASSET_VERSION}`;
 
 /** Safari / mobile browsers reject canvases larger than this on one side. */
 const MAX_CANVAS_SIDE = 4096;
@@ -31,8 +32,17 @@ export const POSTER_OPTIONS: Record<
 };
 
 let pdfWorkerReady = false;
+let cachedAssetVersion: string | null = null;
 let cachedSourceCanvas: HTMLCanvasElement | null = null;
 let cachedSourceBg: ReturnType<typeof sampleSourceBackground> | null = null;
+
+function ensurePosterAssetCache(): void {
+  if (cachedAssetVersion === VISUAL_ASSET_VERSION) return;
+  cachedAssetVersion = VISUAL_ASSET_VERSION;
+  pdfWorkerReady = false;
+  cachedSourceCanvas = null;
+  cachedSourceBg = null;
+}
 
 function isMobileViewport(): boolean {
   if (typeof window === "undefined") return false;
@@ -118,6 +128,7 @@ async function renderPngFallbackToCanvas(): Promise<HTMLCanvasElement> {
 }
 
 async function getPosterSourceCanvas(): Promise<HTMLCanvasElement> {
+  ensurePosterAssetCache();
   if (cachedSourceCanvas) return cachedSourceCanvas;
 
   try {
