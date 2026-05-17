@@ -1,5 +1,6 @@
-// Bug fix: N/A — root layout with brand fonts (Newake + Indivisible) and Dutch locale.
+// Bug fix: N/A — root layout with brand fonts (Newake + Indivisible + Caveat handwritten) and Dutch locale.
 import type { Metadata } from "next";
+import { Caveat } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -15,6 +16,12 @@ const indivisible = localFont({
   display: "swap",
 });
 
+const caveat = Caveat({
+  subsets: ["latin"],
+  variable: "--font-handwritten",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "De Werktelefoon",
   description: "Hoe gaat het met je op het werk?",
@@ -26,7 +33,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="nl" className={`${newake.variable} ${indivisible.variable}`}>
+    <html
+      lang="nl"
+      className={`${newake.variable} ${indivisible.variable} ${caveat.variable}`}
+    >
       <body className="min-h-[100dvh] antialiased">{children}</body>
     </html>
   );

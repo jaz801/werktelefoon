@@ -1,3 +1,6 @@
+// Bug fix: ring centered in upload card; face detect still offsets when a face is found.
+// Bug fix: empty state — animated profile ring demo; hero example photos removed.
+// Bug fix: removed ring text controls; ring has black outline inside + outside.
 // Editor: photo visible inside ring circle only; black fill outside (preview + export).
 "use client";
 
@@ -12,17 +15,14 @@ import {
 } from "@/lib/imageLayout";
 import {
   clamp,
+  getRingCenter,
   getRingLayout,
   RING_COLORS,
-  RING_COPY,
-  RING_LABEL_FONT_EXPORT,
   type RingColorKey,
-  type RingCopyKey,
-  type RingFontWeightKey,
-  type RingTextColorKey,
 } from "@/lib/ringGeometry";
 import { OutlineButton } from "./OutlineButton";
-import { RingColorSwatches, RingCopySidebar } from "./RingControls";
+import { ProfileRingDemo } from "./ProfileRingDemo";
+import { RingColorSwatches } from "./RingControls";
 import { RingOverlay } from "./RingOverlay";
 
 const PREVIEW_WIDTH = 360;
@@ -39,18 +39,15 @@ export function PhotoCard() {
     displayWidth: 0,
     displayHeight: 0,
   });
-  const [ringPosition, setRingPosition] = useState({ x: 180, y: 140 });
+  const [ringPosition, setRingPosition] = useState(() =>
+    getRingCenter(PREVIEW_WIDTH, PREVIEW_HEIGHT),
+  );
   const [ringColor, setRingColor] = useState<RingColorKey>("blue");
-  const [ringCopy, setRingCopy] = useState<RingCopyKey>("question");
-  const [ringFontWeight, setRingFontWeight] =
-    useState<RingFontWeightKey>("medium");
-  const [ringTextColor, setRingTextColor] = useState<RingTextColorKey>("black");
   const [downloading, setDownloading] = useState(false);
 
-  const ringText = RING_COPY[ringCopy];
   const ringLayout = useMemo(
-    () => getRingLayout(ringText, PREVIEW_WIDTH, PREVIEW_HEIGHT),
-    [ringText],
+    () => getRingLayout(PREVIEW_WIDTH, PREVIEW_HEIGHT),
+    [],
   );
 
   useEffect(() => {
@@ -83,14 +80,11 @@ export function PhotoCard() {
       );
       setDisplayLayout(layout);
 
-      const ring = getRingLayout(
-        RING_COPY[ringCopy],
-        PREVIEW_WIDTH,
-        PREVIEW_HEIGHT,
-      );
+      const ring = getRingLayout(PREVIEW_WIDTH, PREVIEW_HEIGHT);
       const r = ring.ringRadius;
-      let x = PREVIEW_WIDTH / 2;
-      let y = layout.offsetY + layout.displayHeight * 0.32;
+      const center = getRingCenter(PREVIEW_WIDTH, PREVIEW_HEIGHT);
+      let x = center.x;
+      let y = center.y;
 
       if (detected?.face) {
         const mapped = mapImagePointToPreview(
@@ -107,7 +101,7 @@ export function PhotoCard() {
         y: clamp(y, r, PREVIEW_HEIGHT - r),
       });
     },
-    [ringCopy],
+    [],
   );
 
   const onImageLoad = useCallback(
@@ -136,11 +130,6 @@ export function PhotoCard() {
         ringRadius: ringLayout.ringRadius,
         displayLayout,
         ringColor: RING_COLORS[ringColor],
-        text: ringText,
-        fontFamily: RING_LABEL_FONT_EXPORT,
-        fontSize: ringLayout.fontSize,
-        fontWeightKey: ringFontWeight,
-        textColorKey: ringTextColor,
         strokeWidth: ringLayout.strokeWidth,
       });
       const link = document.createElement("a");
@@ -156,30 +145,26 @@ export function PhotoCard() {
     naturalSize,
     displayLayout,
     ringColor,
-    ringCopy,
-    ringFontWeight,
-    ringTextColor,
     ringPosition,
     ringLayout,
-    ringText,
   ]);
 
   if (!imageUrl) {
     return (
-      <div
-        className="flex min-h-[320px] w-full max-w-md flex-col items-center justify-center rounded-3xl border-2 border-dashed border-black p-8"
-        style={{ backgroundColor: "#A4CAE7" }}
-      >
-        <input
-          ref={inputRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={(e) => onFile(e.target.files?.[0])}
-        />
+      <div className="flex w-full max-w-md flex-col items-center px-1">
+        <div className="relative w-full max-w-[360px] shrink-0">
+          <ProfileRingDemo />
+          <input
+            ref={inputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => onFile(e.target.files?.[0])}
+          />
+        </div>
         <OutlineButton
           onClick={() => inputRef.current?.click()}
-          className="font-[family-name:var(--font-newake)]"
+          className="mt-3 w-full font-[family-name:var(--font-newake)]"
         >
           upload foto
         </OutlineButton>
@@ -188,69 +173,53 @@ export function PhotoCard() {
   }
 
   return (
-    <div className="flex w-full max-w-[640px] flex-col items-center px-1">
-      <div className="flex w-full flex-col items-center gap-4 lg:flex-row lg:items-start">
-        <div className="flex w-full flex-col items-center gap-4">
-          <div className="relative w-full max-w-[360px] shrink-0">
-            <div
-              className="relative mx-auto overflow-hidden rounded-3xl border-2 border-black bg-black"
-              style={{
-                width: "min(100%, 360px)",
-                height: PREVIEW_HEIGHT,
-                maxWidth: PREVIEW_WIDTH,
-              }}
-            >
-              <div
-                className="absolute inset-0"
-                style={{
-                  clipPath: `circle(${ringLayout.ringRadius}px at ${ringPosition.x}px ${ringPosition.y}px)`,
-                }}
-              >
-                <Image
-                  src={imageUrl}
-                  alt="Jouw profielfoto"
-                  fill
-                  className="object-contain"
-                  unoptimized
-                  onLoad={onImageLoad}
-                />
-              </div>
-              <RingOverlay
-                width={PREVIEW_WIDTH}
-                height={PREVIEW_HEIGHT}
-                ringRadius={ringLayout.ringRadius}
-                fontSize={ringLayout.fontSize}
-                strokeWidth={ringLayout.strokeWidth}
-                ringColor={RING_COLORS[ringColor]}
-                text={ringText}
-                fontWeightKey={ringFontWeight}
-                textColorKey={ringTextColor}
-                position={ringPosition}
-                onPositionChange={setRingPosition}
-              />
-            </div>
-            <OutlineButton
-              onClick={handleDownload}
-              disabled={downloading}
-              className="mt-3 w-full font-[family-name:var(--font-indivisible)] lg:absolute lg:bottom-0 lg:left-full lg:mt-0 lg:ml-3 lg:w-auto lg:whitespace-nowrap"
-            >
-              {downloading ? "Bezig…" : "Download"}
-            </OutlineButton>
+    <div className="flex w-full max-w-md flex-col items-center px-1">
+      <div className="relative w-full max-w-[360px] shrink-0">
+        <div
+          className="relative mx-auto overflow-hidden rounded-3xl border-2 border-black bg-black"
+          style={{
+            width: "min(100%, 360px)",
+            height: PREVIEW_HEIGHT,
+            maxWidth: PREVIEW_WIDTH,
+          }}
+        >
+          <div
+            className="absolute inset-0"
+            style={{
+              clipPath: `circle(${ringLayout.ringRadius}px at ${ringPosition.x}px ${ringPosition.y}px)`,
+            }}
+          >
+            <Image
+              src={imageUrl}
+              alt="Jouw profielfoto"
+              fill
+              className="object-contain"
+              unoptimized
+              onLoad={onImageLoad}
+            />
           </div>
-          <RingColorSwatches
-            activeColor={ringColor}
-            onColorChange={setRingColor}
+          <RingOverlay
+            width={PREVIEW_WIDTH}
+            height={PREVIEW_HEIGHT}
+            ringRadius={ringLayout.ringRadius}
+            strokeWidth={ringLayout.strokeWidth}
+            ringColor={RING_COLORS[ringColor]}
+            position={ringPosition}
+            onPositionChange={setRingPosition}
           />
         </div>
-        <RingCopySidebar
-          activeCopy={ringCopy}
-          onCopyChange={setRingCopy}
-          activeWeight={ringFontWeight}
-          onWeightChange={setRingFontWeight}
-          activeTextColor={ringTextColor}
-          onTextColorChange={setRingTextColor}
-        />
+        <OutlineButton
+          onClick={handleDownload}
+          disabled={downloading}
+          className="mt-3 w-full font-[family-name:var(--font-indivisible)]"
+        >
+          {downloading ? "Bezig…" : "Download"}
+        </OutlineButton>
       </div>
+      <RingColorSwatches
+        activeColor={ringColor}
+        onColorChange={setRingColor}
+      />
     </div>
   );
 }

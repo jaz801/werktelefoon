@@ -1,3 +1,4 @@
+// Bug fix: subtler arrow — thinner stroke, lower opacity, smaller head/ball (was too prominent).
 // Bug fix: arrow static on load; blue ball runs path once then hides at arrowhead (no line draw-in).
 // Recurring: arrowhead overlapped donate CTA when y2 used donateRect.bottom - gap (marker extends past path end).
 // L-shaped arrow beside intro copy; smooth bend points at doneer CTA with gap.
@@ -158,13 +159,17 @@ export function DonateArrow() {
       <defs>
         <marker
           id={markerId}
-          markerWidth="10"
-          markerHeight="10"
-          refX="2"
-          refY="5"
+          markerWidth="7"
+          markerHeight="7"
+          refX="1.5"
+          refY="3.5"
           orient="auto"
         >
-          <path d="M0,0 L10,5 L0,10 L2.5,5 Z" fill="var(--text)" />
+          <path
+            d="M0,0 L7,3.5 L0,7 L1.75,3.5 Z"
+            fill="var(--text)"
+            fillOpacity={0.45}
+          />
         </marker>
       </defs>
       <path
@@ -172,17 +177,20 @@ export function DonateArrow() {
         d={geometry.path}
         fill="none"
         stroke="var(--text)"
-        strokeWidth={2.5}
+        strokeOpacity={0.45}
+        strokeWidth={1.5}
         strokeLinecap="round"
         strokeLinejoin="round"
         markerEnd={`url(#${markerId})`}
       />
       <circle
         ref={circleRef}
-        r={6}
+        r={4}
         fill="var(--blue)"
+        fillOpacity={0.85}
         stroke="var(--text)"
-        strokeWidth={1.5}
+        strokeOpacity={0.45}
+        strokeWidth={1}
         opacity={0}
       />
     </svg>
