@@ -1,3 +1,5 @@
+// Bug fix: placeholder icon pinned to ring center (not flex-centered in full frame).
+// Bug fix: placeholder grey inside ring at 10% opacity (was 30% / solid neutral-800).
 // Bug fix: mobile portrait — preview scales to card width so ring stays centered, not clipped.
 // Bug fix: ring centered in upload card (was biased toward top at 40% height).
 // Bug fix: empty upload preview — profile placeholder + ring colors cycle every 2s.
@@ -54,9 +56,17 @@ export function ProfileRingDemo() {
   return (
     <PhotoPreviewFrame>
       <div
-        className="absolute inset-0 flex items-center justify-center bg-neutral-800"
+        className="absolute inset-0 bg-black/10"
         style={{
           clipPath: `circle(${layout.ringRadius}px at ${ringCenter.x}px ${ringCenter.y}px)`,
+        }}
+      />
+      <div
+        className="pointer-events-none absolute"
+        style={{
+          left: ringCenter.x,
+          top: ringCenter.y,
+          transform: "translate(-50%, -50%)",
         }}
       >
         <ProfilePlaceholderIcon className="h-24 w-24 text-neutral-500 sm:h-28 sm:w-28" />

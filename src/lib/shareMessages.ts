@@ -1,11 +1,10 @@
 // Bug fix: share link uses campaign rebrand URL, not window.location (localhost in dev).
 // Update: IG/TikTok/Snap, LinkedIn en Slack/Teams copy-paste teksten (guerrilla-campagne).
+// Update: rebrand link → https://rebrand.ly/werktelefoon (all channels + kopieer-link knop).
 // Share copy for social buttons; site URL injected at runtime where noted.
 
 /** Link shown in share modals and appended to copied messages. */
-export const SHARE_SITE_URL = "https://rebrand.ly/nf3lt1y";
-
-const GUERRILLA_URL = "www.werktelefoon.nl/guerilla";
+export const SHARE_SITE_URL = "https://rebrand.ly/werktelefoon";
 
 const SOCIAL_HASHTAGS =
   "#werktelefoon #guerrillacampagne #takeover #werkveranderaars #werkveranderaar";
@@ -29,15 +28,13 @@ Deze week nemen we LinkedIn over om in 7 dagen met 100.000 werkveranderaars de l
 
 Wanneer voelde jij je voor het laatst écht goed op je werk? De meeste mensen komen niet verder dan 5%.
 
-Kan werkend Nederland op jou rekenen? Doe mee voor €1,99.
-
-${GUERRILLA_URL}`;
+Kan werkend Nederland op jou rekenen? Doe mee voor €1,99.`;
 
 export function getWhatsAppShareMessage(siteUrl: string): string {
   return `${WHATSAPP_SLACK_COPY}\n${siteUrl}`;
 }
 
-export function getLinkedInShareMessage(_siteUrl: string): string {
+export function getLinkedInShareMessage(siteUrl: string): string {
   return `Wanneer voelde jij je dit jaar voor het laatst écht goed op je werk?
 De meeste mensen komen niet verder dan 5%.
 
@@ -47,7 +44,7 @@ In 7 dagen willen we met 100.000 werkveranderaars de lijnen open zetten.
 Voor €1,99 doe jij mee. Minder dan een kop koffie.
 Kan werkend Nederland op jou rekenen?
 
-${GUERRILLA_URL}`;
+${siteUrl}`;
 }
 
 export function getInstagramShareMessage(_siteUrl: string): string {
@@ -60,8 +57,8 @@ export function getSnapchatShareMessage(_siteUrl: string): string {
   return INSTAGRAM_TIKTOK_SNAP_COPY;
 }
 
-export function getSlackTeamsShareMessage(_siteUrl: string): string {
-  return SLACK_TEAMS_COPY;
+export function getSlackTeamsShareMessage(siteUrl: string): string {
+  return `${SLACK_TEAMS_COPY}\n\n${siteUrl}`;
 }
 
 export const WHATSAPP_WEB_URL = "https://web.whatsapp.com/";
