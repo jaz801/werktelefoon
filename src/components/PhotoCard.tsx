@@ -1,3 +1,8 @@
+// Bug fix: share fan offset 50px up via inline marginTop (Tailwind translate was not shifting layout).
+// Bug fix: upload/download sit under preview column, not below preview+fan row.
+// Bug fix: companion (share fan) aligns to preview frame center via md:flex-row items-center.
+// Bug fix: download uses full photo resolution (exportScale), not 360×420 preview pixels.
+// Bug fix: mobile portrait — preview scales to card width so ring stays centered, not clipped.
 // Bug fix: ring centered in upload card; face detect still offsets when a face is found.
 // Bug fix: empty state — animated profile ring demo; hero example photos removed.
 // Bug fix: removed ring text controls; ring has black outline inside + outside.
@@ -5,11 +10,20 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { detectFaceFromUrl } from "@/lib/detectFace";
 import { exportComposedImage } from "@/lib/exportImage";
 import {
+  capExportScale,
   computeObjectContainLayout,
+  getExportScaleFactor,
   mapImagePointToPreview,
   type DisplayLayout,
 } from "@/lib/imageLayout";
@@ -21,14 +35,68 @@ import {
   type RingColorKey,
 } from "@/lib/ringGeometry";
 import { OutlineButton } from "./OutlineButton";
+import {
+  PhotoPreviewFrame,
+  PREVIEW_HEIGHT,
+  PREVIEW_WIDTH,
+} from "./PhotoPreviewFrame";
 import { ProfileRingDemo } from "./ProfileRingDemo";
 import { RingColorSwatches } from "./RingControls";
 import { RingOverlay } from "./RingOverlay";
 
-const PREVIEW_WIDTH = 360;
-const PREVIEW_HEIGHT = 420;
+/** Pixels to shift the share fan stack upward (inline style — reliable in flex layout). */
+export const SHARE_FAN_OFFSET_Y_PX = 50;
 
-export function PhotoCard() {
+type PhotoCardProps = {
+  /** Shown beside the preview frame (e.g. fanned share cards), vertically centered on it. */
+  companion?: ReactNode;
+};
+
+function PhotoCardShell({
+  companion,
+  preview,
+  belowPreview,
+  footer,
+}: {
+  companion?: ReactNode;
+  preview: ReactNode;
+  belowPreview?: ReactNode;
+  footer?: ReactNode;
+}) {
+  const paired = Boolean(companion);
+
+  return (
+    <div
+      className={`flex w-full flex-col items-center px-1 ${paired ? "max-w-6xl" : "max-w-md"}`}
+    >
+      <div
+        className={`flex w-full flex-col items-center gap-10 ${
+          paired
+            ? "md:flex-row md:items-center md:justify-center md:gap-8 lg:gap-12"
+            : ""
+        }`}
+      >
+        <div className="flex w-full max-w-[360px] shrink-0 flex-col items-center">
+          {preview}
+          {belowPreview ? (
+            <div className="mt-3 w-full">{belowPreview}</div>
+          ) : null}
+        </div>
+        {companion ? (
+          <div
+            className="relative z-10 flex w-full flex-1 items-center justify-center px-2 md:w-auto md:min-w-0"
+            style={{ marginTop: `-${SHARE_FAN_OFFSET_Y_PX}px` }}
+          >
+            {companion}
+          </div>
+        ) : null}
+      </div>
+      {footer}
+    </div>
+  );
+}
+
+export function PhotoCard({ companion }: PhotoCardProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [naturalSize, setNaturalSize] = useState({ w: 0, h: 0 });
@@ -121,10 +189,17 @@ export function PhotoCard() {
     if (!imageUrl || !naturalSize.w) return;
     setDownloading(true);
     try {
+      const fullScale = getExportScaleFactor(displayLayout, naturalSize.w);
+      const exportScale = capExportScale(
+        fullScale,
+        PREVIEW_WIDTH,
+        PREVIEW_HEIGHT,
+      );
       const blob = await exportComposedImage({
         imageSrc: imageUrl,
         width: PREVIEW_WIDTH,
         height: PREVIEW_HEIGHT,
+        exportScale,
         ringCenterX: ringPosition.x,
         ringCenterY: ringPosition.y,
         ringRadius: ringLayout.ringRadius,
@@ -151,38 +226,37 @@ export function PhotoCard() {
 
   if (!imageUrl) {
     return (
-      <div className="flex w-full max-w-md flex-col items-center px-1">
-        <div className="relative w-full max-w-[360px] shrink-0">
-          <ProfileRingDemo />
-          <input
-            ref={inputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={(e) => onFile(e.target.files?.[0])}
-          />
-        </div>
-        <OutlineButton
-          onClick={() => inputRef.current?.click()}
-          className="mt-3 w-full font-[family-name:var(--font-newake)]"
-        >
-          upload foto
-        </OutlineButton>
-      </div>
+      <PhotoCardShell
+        companion={companion}
+        preview={
+          <>
+            <ProfileRingDemo />
+            <input
+              ref={inputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => onFile(e.target.files?.[0])}
+            />
+          </>
+        }
+        belowPreview={
+          <OutlineButton
+            onClick={() => inputRef.current?.click()}
+            className="w-full font-[family-name:var(--font-newake)]"
+          >
+            upload foto
+          </OutlineButton>
+        }
+      />
     );
   }
 
   return (
-    <div className="flex w-full max-w-md flex-col items-center px-1">
-      <div className="relative w-full max-w-[360px] shrink-0">
-        <div
-          className="relative mx-auto overflow-hidden rounded-3xl border-2 border-black bg-black"
-          style={{
-            width: "min(100%, 360px)",
-            height: PREVIEW_HEIGHT,
-            maxWidth: PREVIEW_WIDTH,
-          }}
-        >
+    <PhotoCardShell
+      companion={companion}
+      preview={
+        <PhotoPreviewFrame>
           <div
             className="absolute inset-0"
             style={{
@@ -207,19 +281,23 @@ export function PhotoCard() {
             position={ringPosition}
             onPositionChange={setRingPosition}
           />
-        </div>
+        </PhotoPreviewFrame>
+      }
+      belowPreview={
         <OutlineButton
           onClick={handleDownload}
           disabled={downloading}
-          className="mt-3 w-full font-[family-name:var(--font-indivisible)]"
+          className="w-full font-[family-name:var(--font-indivisible)]"
         >
           {downloading ? "Bezig…" : "Download"}
         </OutlineButton>
-      </div>
-      <RingColorSwatches
-        activeColor={ringColor}
-        onColorChange={setRingColor}
-      />
-    </div>
+      }
+      footer={
+        <RingColorSwatches
+          activeColor={ringColor}
+          onColorChange={setRingColor}
+        />
+      }
+    />
   );
 }

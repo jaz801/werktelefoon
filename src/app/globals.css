@@ -42,3 +42,65 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-newake), system-ui, sans-serif;
   font-weight: 400;
 }
+
+/* Animated underline on intro "content" link (ContentScrollLink). */
+@keyframes content-underline-draw {
+  0%,
+  100% {
+    transform: scaleX(0.15);
+    opacity: 0.35;
+  }
+  45%,
+  55% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+.content-scroll-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.08em;
+  height: 2px;
+  background: var(--text);
+  transform-origin: left center;
+  animation: content-underline-draw 2.4s ease-in-out infinite;
+}
+
+.content-scroll-link:hover::after,
+.content-scroll-link:focus-visible::after {
+  animation: none;
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+.content-scroll-link:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* OutlineButton: tap highlight off (hover/press styles on component via Tailwind). */
+@layer components {
+  .outline-btn {
+    -webkit-tap-highlight-color: transparent;
+    background-color: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content-scroll-link::after {
+    animation: none;
+    transform: scaleX(1);
+    opacity: 1;
+  }
+
+  .outline-btn:hover,
+  .outline-btn:active,
+  .outline-btn:focus-visible {
+    transform: none;
+    background-color: transparent;
+  }
+}

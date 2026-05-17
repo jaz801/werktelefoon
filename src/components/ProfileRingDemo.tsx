@@ -1,3 +1,4 @@
+// Bug fix: mobile portrait — preview scales to card width so ring stays centered, not clipped.
 // Bug fix: ring centered in upload card (was biased toward top at 40% height).
 // Bug fix: empty upload preview — profile placeholder + ring colors cycle every 2s.
 "use client";
@@ -10,10 +11,13 @@ import {
   RING_COLORS,
   type RingColorKey,
 } from "@/lib/ringGeometry";
+import {
+  PhotoPreviewFrame,
+  PREVIEW_HEIGHT,
+  PREVIEW_WIDTH,
+} from "./PhotoPreviewFrame";
 import { RingStroke } from "./RingStroke";
 
-const PREVIEW_WIDTH = 360;
-const PREVIEW_HEIGHT = 420;
 const COLOR_CYCLE_MS = 2000;
 
 function ProfilePlaceholderIcon({ className }: { className?: string }) {
@@ -48,15 +52,7 @@ export function ProfileRingDemo() {
   const ringColor = RING_COLORS[activeKey];
 
   return (
-    <div
-      className="relative mx-auto overflow-hidden rounded-3xl border-2 border-black bg-black"
-      style={{
-        width: "min(100%, 360px)",
-        height: PREVIEW_HEIGHT,
-        maxWidth: PREVIEW_WIDTH,
-      }}
-      aria-hidden
-    >
+    <PhotoPreviewFrame>
       <div
         className="absolute inset-0 flex items-center justify-center bg-neutral-800"
         style={{
@@ -75,6 +71,6 @@ export function ProfileRingDemo() {
         ringColor={ringColor}
         colorTransition
       />
-    </div>
+    </PhotoPreviewFrame>
   );
 }

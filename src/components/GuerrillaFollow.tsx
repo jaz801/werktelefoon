@@ -1,8 +1,7 @@
-// Bug fix: layout — PhotoCard under challenge text; moved from hero section.
+// Bug fix: PhotoCard moved to ShareContentGrid (left column in #share-content).
 // Bug fix: N/A — guerrilla follow + werkveranderaar challenge block under intro copy.
 import Image from "next/image";
 import { OutlineButton } from "./OutlineButton";
-import { PhotoCard } from "./PhotoCard";
 
 const ANIQUE_LINKEDIN_URL = "https://www.linkedin.com/in/aniquewijnhoud/";
 
@@ -54,9 +53,6 @@ export function GuerrillaFollow() {
         levenslang de titel van Founding Partner van De Werktelefoon.
       </p>
 
-      <div className="mt-8 flex w-full justify-center">
-        <PhotoCard />
-      </div>
     </section>
   );
 }
