@@ -1,5 +1,6 @@
 // Bug fix: pre-rendered 7s MP4 clips per platform format (no live browser render on download).
 // Recurring: stale MP4 after share-visual.png swap — bump VISUAL_ASSET_VERSION and npm run render:clips.
+// 20260517-v3: re-rendered from WhatsApp visual (instagram-4-5 / 1-1 / tiktok).
 import type { InstagramAspectRatio } from "./shareVisualExport";
 import type { ShareVisualFormat } from "./shareVisualExport";
 import { VISUAL_ASSET_VERSION } from "./visualAssetVersion";
