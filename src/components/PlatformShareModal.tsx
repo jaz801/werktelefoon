@@ -1,4 +1,5 @@
 // Bug fix: LinkedIn — Banner + GIF download; IG/TikTok/Snap/WA — visual + clip on message step.
+// Bug fix: WhatsApp “Open” — web.whatsapp.com on desktop; wa.me on mobile portrait.
 // Update: tip onder “Deel via …” — Tip: voiceberichten werken nog beter.
 "use client";
 
@@ -19,7 +20,7 @@ import {
   SNAPCHAT_WEB_URL,
   TEAMS_WEB_URL,
   TIKTOK_WEB_URL,
-  WHATSAPP_WEB_URL,
+  getWhatsAppOpenUrl,
 } from "@/lib/shareMessages";
 import type { ShareVisualFormat } from "@/lib/shareVisualExport";
 import { OutlineButton } from "./OutlineButton";
@@ -43,7 +44,7 @@ type PlatformShareModalProps = {
 
 type ModalStep = "message" | "visual" | "clip" | "banner" | "gif";
 
-type OpenAction = { label: string; url: string };
+type OpenAction = { label: string; url?: string; getUrl?: () => string };
 
 type PlatformConfig = {
   title: string;
@@ -63,7 +64,7 @@ const PLATFORM_CONFIG: Record<SharePlatform, PlatformConfig> = {
   whatsapp: {
     title: "Deel via WhatsApp",
     visualTitle: "Download visual",
-    openActions: [{ label: "Open WhatsApp", url: WHATSAPP_WEB_URL }],
+    openActions: [{ label: "Open WhatsApp", getUrl: getWhatsAppOpenUrl }],
     hasVisual: true,
     hasClip: true,
     hasBanner: false,
@@ -301,11 +302,13 @@ export function PlatformShareModal({
               </OutlineButton>
               {config.openActions.map((action) => (
                 <OutlineButton
-                  key={action.url}
+                  key={action.label}
                   type="button"
-                  onClick={() =>
-                    window.open(action.url, "_blank", "noopener,noreferrer")
-                  }
+                  onClick={() => {
+                    const url = action.getUrl?.() ?? action.url;
+                    if (!url) return;
+                    window.open(url, "_blank", "noopener,noreferrer");
+                  }}
                   disabled={!message}
                   className="w-full sm:flex-1"
                 >

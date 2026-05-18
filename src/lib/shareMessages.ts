@@ -6,6 +6,7 @@
 // Update: zachtere netwerk-CTA — jouw netwerk nodig, delen met 1–2 personen of in groep.
 // Update: rebrand link → https://rebrand.ly/werktelefoon (all channels + kopieer-link knop).
 // Update: “guerilla campagne” formulering (WhatsApp, LinkedIn, Slack/Teams).
+// Bug fix: WhatsApp open link — web.whatsapp.com on desktop; wa.me on mobile portrait (native app).
 // Update: ease-zin (voorgeschreven berichten + content) in alle share-teksten.
 // Share copy for social buttons; site URL injected at runtime where noted.
 
@@ -87,6 +88,16 @@ export function getSlackTeamsShareMessage(siteUrl: string): string {
 }
 
 export const WHATSAPP_WEB_URL = "https://web.whatsapp.com/";
+export const WHATSAPP_MOBILE_URL = "https://wa.me/";
+
+/** Desktop / landscape: web client; mobile portrait: opens native WhatsApp app. */
+export function getWhatsAppOpenUrl(): string {
+  if (typeof window === "undefined") return WHATSAPP_WEB_URL;
+  const mobilePortrait = window.matchMedia(
+    "(max-width: 768px) and (orientation: portrait)",
+  ).matches;
+  return mobilePortrait ? WHATSAPP_MOBILE_URL : WHATSAPP_WEB_URL;
+}
 export const LINKEDIN_WEB_URL = "https://www.linkedin.com/feed/";
 export const INSTAGRAM_WEB_URL = "https://www.instagram.com/";
 export const TIKTOK_WEB_URL = "https://www.tiktok.com/";
