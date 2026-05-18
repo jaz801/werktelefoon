@@ -1,6 +1,7 @@
 // Bug fix: intro copy — socials campaign narrative; 5% + 100.000 in Newake display; Ik ben erbij CTA.
 // Recurring: Indivisible is single-weight — font-bold on stats does not stand out; use Newake + scale.
-// Update: netwerk-CTA (zelfde copy als share-berichten) i.p.v. oude content-zinnen.
+// Update: netwerk-CTA + ease-zin; “content” onderstreept, scroll naar #share-content.
+import { ContentScrollLink } from "./ContentScrollLink";
 import { GuerillaFollow } from "./GuerillaFollow";
 import { ReadMoreButton } from "./ReadMoreButton";
 import { NETWORK_ASK_LINE_1, NETWORK_ASK_LINE_2 } from "@/lib/shareMessages";
@@ -33,6 +34,10 @@ export function IntroCopy() {
       </p>
       <p className="mt-3">{NETWORK_ASK_LINE_1}</p>
       <p className="mt-3">{NETWORK_ASK_LINE_2}</p>
+      <p className="mt-3">
+        Om het jou zo makkelijk mogelijk te maken hebben we op de website
+        voorgeschreven berichten en <ContentScrollLink /> gemaakt.
+      </p>
       <ReadMoreButton />
       <GuerillaFollow />
     </div>

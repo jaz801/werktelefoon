@@ -6,6 +6,7 @@
 // Update: zachtere netwerk-CTA — jouw netwerk nodig, delen met 1–2 personen of in groep.
 // Update: rebrand link → https://rebrand.ly/werktelefoon (all channels + kopieer-link knop).
 // Update: “guerilla campagne” formulering (WhatsApp, LinkedIn, Slack/Teams).
+// Update: ease-zin (voorgeschreven berichten + content) in alle share-teksten.
 // Share copy for social buttons; site URL injected at runtime where noted.
 
 /** Link shown in share modals and appended to copied messages. */
@@ -20,9 +21,14 @@ export const NETWORK_ASK_LINE_1 =
 export const NETWORK_ASK_LINE_2 =
   "Als jij dit kunt delen met 1 of 2 personen, of in een groep, help je ons enorm.";
 
+export const SHARE_EASE_COPY =
+  "Om het jou zo makkelijk mogelijk te maken hebben we op de website voorgeschreven berichten en content gemaakt.";
+
 const NETWORK_ASK_COPY = `${NETWORK_ASK_LINE_1}
 
-${NETWORK_ASK_LINE_2}`;
+${NETWORK_ASK_LINE_2}
+
+${SHARE_EASE_COPY}`;
 
 const INSTAGRAM_TIKTOK_SNAP_COPY = `Wanneer voelde jij je voor het laatst écht goed op je werk?
 
