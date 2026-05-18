@@ -6,7 +6,7 @@
 // Update: zachtere netwerk-CTA — jouw netwerk nodig, delen met 1–2 personen of in groep.
 // Update: rebrand link → https://rebrand.ly/werktelefoon (all channels + kopieer-link knop).
 // Update: “guerilla campagne” formulering (WhatsApp, LinkedIn, Slack/Teams).
-// Bug fix: WhatsApp open link — web.whatsapp.com on desktop; wa.me on mobile portrait (native app).
+// Bug fix: WhatsApp open — web.whatsapp.com on desktop; whatsapp:// on mobile portrait (native app only).
 // Update: ease-zin (voorgeschreven berichten + content) in alle share-teksten.
 // Share copy for social buttons; site URL injected at runtime where noted.
 
@@ -88,15 +88,23 @@ export function getSlackTeamsShareMessage(siteUrl: string): string {
 }
 
 export const WHATSAPP_WEB_URL = "https://web.whatsapp.com/";
-export const WHATSAPP_MOBILE_URL = "https://wa.me/";
+export const WHATSAPP_APP_URL = "whatsapp://";
 
-/** Desktop / landscape: web client; mobile portrait: opens native WhatsApp app. */
-export function getWhatsAppOpenUrl(): string {
-  if (typeof window === "undefined") return WHATSAPP_WEB_URL;
-  const mobilePortrait = window.matchMedia(
+function isMobilePortraitViewport(): boolean {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia(
     "(max-width: 768px) and (orientation: portrait)",
   ).matches;
-  return mobilePortrait ? WHATSAPP_MOBILE_URL : WHATSAPP_WEB_URL;
+}
+
+/** Desktop: web client in new tab; mobile portrait: native app via custom URL scheme. */
+export function openWhatsApp(): void {
+  if (typeof window === "undefined") return;
+  if (isMobilePortraitViewport()) {
+    window.location.href = WHATSAPP_APP_URL;
+    return;
+  }
+  window.open(WHATSAPP_WEB_URL, "_blank", "noopener,noreferrer");
 }
 export const LINKEDIN_WEB_URL = "https://www.linkedin.com/feed/";
 export const INSTAGRAM_WEB_URL = "https://www.instagram.com/";

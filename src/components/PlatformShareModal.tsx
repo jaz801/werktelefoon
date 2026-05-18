@@ -1,5 +1,5 @@
 // Bug fix: LinkedIn — Banner + GIF download; IG/TikTok/Snap/WA — visual + clip on message step.
-// Bug fix: WhatsApp “Open” — web.whatsapp.com on desktop; wa.me on mobile portrait.
+// Bug fix: WhatsApp “Open” — web.whatsapp.com on desktop; whatsapp:// on mobile portrait.
 // Update: tip onder “Deel via …” — Tip: voiceberichten werken nog beter.
 "use client";
 
@@ -20,7 +20,7 @@ import {
   SNAPCHAT_WEB_URL,
   TEAMS_WEB_URL,
   TIKTOK_WEB_URL,
-  getWhatsAppOpenUrl,
+  openWhatsApp,
 } from "@/lib/shareMessages";
 import type { ShareVisualFormat } from "@/lib/shareVisualExport";
 import { OutlineButton } from "./OutlineButton";
@@ -44,7 +44,11 @@ type PlatformShareModalProps = {
 
 type ModalStep = "message" | "visual" | "clip" | "banner" | "gif";
 
-type OpenAction = { label: string; url?: string; getUrl?: () => string };
+type OpenAction = {
+  label: string;
+  url?: string;
+  open?: () => void;
+};
 
 type PlatformConfig = {
   title: string;
@@ -64,7 +68,7 @@ const PLATFORM_CONFIG: Record<SharePlatform, PlatformConfig> = {
   whatsapp: {
     title: "Deel via WhatsApp",
     visualTitle: "Download visual",
-    openActions: [{ label: "Open WhatsApp", getUrl: getWhatsAppOpenUrl }],
+    openActions: [{ label: "Open WhatsApp", open: openWhatsApp }],
     hasVisual: true,
     hasClip: true,
     hasBanner: false,
@@ -305,9 +309,12 @@ export function PlatformShareModal({
                   key={action.label}
                   type="button"
                   onClick={() => {
-                    const url = action.getUrl?.() ?? action.url;
-                    if (!url) return;
-                    window.open(url, "_blank", "noopener,noreferrer");
+                    if (action.open) {
+                      action.open();
+                      return;
+                    }
+                    if (!action.url) return;
+                    window.open(action.url, "_blank", "noopener,noreferrer");
                   }}
                   disabled={!message}
                   className="w-full sm:flex-1"
