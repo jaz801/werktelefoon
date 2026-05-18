@@ -5,6 +5,7 @@
 // Update: IG/TikTok/Snap — expliciet dat 100k alleen lukt als iedereen deelt in ieders netwerk.
 // Update: zachtere netwerk-CTA — jouw netwerk nodig, delen met 1–2 personen of in groep.
 // Update: rebrand link → https://rebrand.ly/werktelefoon (all channels + kopieer-link knop).
+// Update: “guerilla campagne” formulering (WhatsApp, LinkedIn, Slack/Teams).
 // Share copy for social buttons; site URL injected at runtime where noted.
 
 /** Link shown in share modals and appended to copied messages. */
@@ -29,19 +30,19 @@ De meeste mensen haken af bij 5%.
 
 Deze week kleuren we de socials. In 7 dagen zetten 100.000 werkveranderaars de lijnen van De Werktelefoon open.
 
-${NETWORK_ASK_COPY} Kant-en-klare content staat klaar om door te sturen.
+${NETWORK_ASK_COPY}
 
 Link in bio 👉 De Werktelefoon
 
 ${SOCIAL_HASHTAGS}`;
 
-const WHATSAPP_COPY = `Hey! Deze week is guerilla voor De Werktelefoon: in 7 dagen willen 100.000 werkveranderaars de lijnen openzetten.
+const WHATSAPP_COPY = `Hey! Deze week doen we een guerilla campagne voor de Werktelefoon: in 7 dagen willen 100.000 werkveranderaars de lijnen openzetten.
 
-${NETWORK_ASK_COPY} Kant-en-klare content staat klaar om te delen.`;
+${NETWORK_ASK_COPY}`;
 
 const SLACK_TEAMS_COPY = `Hey, ken jij De Werktelefoon al?
 
-Deze week kleuren we LinkedIn met een guerillacampagne: in 7 dagen willen 100.000 werkveranderaars de lijnen openzetten.
+Deze week doen we een guerilla campagne voor De Werktelefoon: in 7 dagen willen 100.000 werkveranderaars de lijnen openzetten.
 
 Wanneer voelde jij je voor het laatst écht goed op je werk? De meeste mensen komen niet verder dan 5%.
 
@@ -56,9 +57,9 @@ export function getLinkedInShareMessage(siteUrl: string): string {
 
 De meeste mensen komen niet verder dan 5%.
 
-Daarom doe ik deze week mee aan de guerilla van De Werktelefoon. In 7 dagen willen 100.000 werkveranderaars de lijnen openzetten.
+Daarom doe ik deze week mee aan de guerilla campagne van De Werktelefoon. In 7 dagen willen 100.000 werkveranderaars de lijnen openzetten.
 
-${NETWORK_ASK_COPY} Kant-en-klare content staat klaar om te delen.
+${NETWORK_ASK_COPY}
 
 ${siteUrl}`;
 }

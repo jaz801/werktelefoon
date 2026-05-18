@@ -1,5 +1,8 @@
 // Bug fix: LinkedIn — Banner + GIF download; IG/TikTok/Snap/WA — visual + clip on message step.
+// Update: tip onder “Deel via …” — Tip: voiceberichten werken nog beter.
 "use client";
+
+const SHARE_VOICE_TIP = "Tip: voiceberichten werken nog beter.";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
@@ -233,12 +236,19 @@ export function PlatformShareModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-3">
-          <h2
-            id={dialogId}
-            className="font-[family-name:var(--font-newake)] text-xl text-[var(--text)] sm:text-2xl"
-          >
-            {title}
-          </h2>
+          <div className="flex min-w-0 flex-1 flex-col gap-1">
+            <h2
+              id={dialogId}
+              className="font-[family-name:var(--font-newake)] text-xl leading-tight text-[var(--text)] sm:text-2xl"
+            >
+              {title}
+            </h2>
+            {step === "message" ? (
+              <p className="font-[family-name:var(--font-indivisible)] text-sm font-semibold text-[var(--text)]/75 sm:text-base">
+                {SHARE_VOICE_TIP}
+              </p>
+            ) : null}
+          </div>
           <button
             type="button"
             onClick={onClose}
