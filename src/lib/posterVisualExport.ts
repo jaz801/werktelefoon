@@ -1,5 +1,6 @@
-// Bug fix: poster download uses public/poster.pdf + PNG fallback; bump VISUAL_ASSET_VERSION on asset swap.
+// Bug fix: poster PNG download at full PDF render resolution (preview may be scaled down).
 // Recurring: poster PDF at scale 2 (3310×4680) breaks iOS; koffiezetapparaat + WC share poster.pdf page 1.
+import { configureCanvasScaling, exportCanvasToPngBlob } from "./canvasExport";
 import { VISUAL_ASSET_VERSION } from "./visualAssetVersion";
 import type { RingColorKey } from "./ringGeometry";
 import {
@@ -161,6 +162,13 @@ function drawScaled(
   target.height = Math.max(1, Math.round(source.height * previewScale));
   const ctx = target.getContext("2d");
   if (!ctx) throw new Error("Canvas niet beschikbaar");
+  configureCanvasScaling(
+    ctx,
+    source.width,
+    source.height,
+    target.width,
+    target.height,
+  );
   ctx.drawImage(source, 0, 0, target.width, target.height);
 }
 
@@ -184,13 +192,13 @@ export async function exportPosterVisualBlob(
   exportCanvas.height = colored.height;
   const ctx = exportCanvas.getContext("2d");
   if (!ctx) throw new Error("Canvas niet beschikbaar");
+  configureCanvasScaling(
+    ctx,
+    colored.width,
+    colored.height,
+    exportCanvas.width,
+    exportCanvas.height,
+  );
   ctx.drawImage(colored, 0, 0);
-
-  return new Promise((resolve, reject) => {
-    exportCanvas.toBlob(
-      (blob) => (blob ? resolve(blob) : reject(new Error("Export mislukt"))),
-      "image/png",
-      1,
-    );
-  });
+  return exportCanvasToPngBlob(exportCanvas);
 }

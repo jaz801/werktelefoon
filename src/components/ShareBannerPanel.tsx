@@ -1,51 +1,28 @@
-// Bug fix: visual PNG download at full platform resolution; preview canvas matches export size.
+// Bug fix: LinkedIn banner — 1584×396 PNG download; preview canvas matches export resolution.
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  exportShareVisualBlob,
-  getShareVisualDimensions,
-  renderShareVisual,
-  type InstagramAspectRatio,
-  type ShareVisualFormat,
-} from "@/lib/shareVisualExport";
+  exportLinkedInBannerBlob,
+  getLinkedInBannerDimensions,
+  renderLinkedInBanner,
+} from "@/lib/shareBannerExport";
 import { type RingColorKey } from "@/lib/ringGeometry";
-import { InstagramAspectPicker } from "./InstagramAspectPicker";
 import { OutlineButton } from "./OutlineButton";
 import { RingColorSwatches } from "./RingControls";
 
-type ShareVisualPanelProps = {
-  format: ShareVisualFormat;
+type ShareBannerPanelProps = {
   onBack: () => void;
 };
 
-const PREVIEW_MAX: Record<ShareVisualFormat, string> = {
-  whatsapp: "max-w-[320px]",
-  instagram: "max-w-[320px]",
-  linkedin: "max-w-[320px]",
-  tiktok: "max-w-[220px]",
-};
-
-export function ShareVisualPanel({ format, onBack }: ShareVisualPanelProps) {
+export function ShareBannerPanel({ onBack }: ShareBannerPanelProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [color, setColor] = useState<RingColorKey>("blue");
-  const [instagramAspect, setInstagramAspect] =
-    useState<InstagramAspectRatio>("4:5");
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const isInstagram = format === "instagram";
-  const visualOptions = useMemo(
-    () => (isInstagram ? { instagramAspect } : {}),
-    [isInstagram, instagramAspect],
-  );
-
-  const dimensions = useMemo(
-    () => getShareVisualDimensions(format, visualOptions),
-    [format, visualOptions],
-  );
-
+  const dimensions = getLinkedInBannerDimensions();
   const previewAspect = {
     aspectRatio: `${dimensions.width} / ${dimensions.height}`,
   };
@@ -58,9 +35,9 @@ export function ShareVisualPanel({ format, onBack }: ShareVisualPanelProps) {
     setLoading(true);
     setError(null);
 
-    void renderShareVisual(format, color, canvas, visualOptions)
+    void renderLinkedInBanner(color, canvas)
       .catch(() => {
-        if (!cancelled) setError("Visual laden mislukt.");
+        if (!cancelled) setError("Banner laden mislukt.");
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -69,18 +46,16 @@ export function ShareVisualPanel({ format, onBack }: ShareVisualPanelProps) {
     return () => {
       cancelled = true;
     };
-  }, [format, color, visualOptions]);
+  }, [color]);
 
   const handleDownload = useCallback(async () => {
     setDownloading(true);
     setError(null);
     try {
-      const blob = await exportShareVisualBlob(format, color, visualOptions);
-      const aspectSuffix =
-        isInstagram && instagramAspect === "1:1" ? "-1-1" : "";
+      const blob = await exportLinkedInBannerBlob(color);
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = `werktelefoon-${format}${aspectSuffix}-${color}.png`;
+      link.download = `werktelefoon-linkedin-banner-${color}.png`;
       link.click();
       URL.revokeObjectURL(link.href);
     } catch {
@@ -88,27 +63,20 @@ export function ShareVisualPanel({ format, onBack }: ShareVisualPanelProps) {
     } finally {
       setDownloading(false);
     }
-  }, [format, color, visualOptions, isInstagram, instagramAspect]);
+  }, [color]);
 
   return (
     <div className="flex flex-col gap-4">
-      {isInstagram ? (
-        <InstagramAspectPicker
-          value={instagramAspect}
-          onChange={setInstagramAspect}
-        />
-      ) : null}
-
-      <div className="relative flex min-h-[200px] items-center justify-center rounded-2xl border-2 border-black bg-white p-3">
+      <div className="relative flex min-h-[120px] items-center justify-center rounded-2xl border-2 border-black bg-white p-3">
         <canvas
           ref={canvasRef}
           width={dimensions.width}
           height={dimensions.height}
-          className={`max-h-[min(50vh,360px)] w-full ${PREVIEW_MAX[format]} object-contain transition-opacity ${
+          className={`max-h-[min(28vh,200px)] w-full max-w-full object-contain transition-opacity ${
             loading ? "opacity-0" : "opacity-100"
           }`}
           style={previewAspect}
-          aria-label="Voorbeeld Werktelefoon visual"
+          aria-label="Voorbeeld LinkedIn banner"
         />
         {loading ? (
           <div className="absolute inset-0 flex items-center justify-center font-[family-name:var(--font-indivisible)] text-[var(--text)]">
@@ -126,11 +94,7 @@ export function ShareVisualPanel({ format, onBack }: ShareVisualPanelProps) {
       ) : null}
 
       <div className="grid grid-cols-2 gap-3">
-        <OutlineButton
-          type="button"
-          onClick={onBack}
-          className="w-full"
-        >
+        <OutlineButton type="button" onClick={onBack} className="w-full">
           Terug
         </OutlineButton>
         <OutlineButton
@@ -139,7 +103,7 @@ export function ShareVisualPanel({ format, onBack }: ShareVisualPanelProps) {
           disabled={loading || downloading}
           className="w-full"
         >
-          {downloading ? "Bezig…" : "Download visual"}
+          {downloading ? "Bezig…" : "Download banner"}
         </OutlineButton>
       </div>
     </div>

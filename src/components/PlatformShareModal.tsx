@@ -1,4 +1,4 @@
-// Bug fix: IG/TikTok/Snap/WA/LinkedIn — Download visual + Download clip on message step; pre-rendered 7s clip.
+// Bug fix: LinkedIn — Banner download with color swatches; IG/TikTok/Snap/WA — visual + clip on message step.
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -20,6 +20,7 @@ import {
 } from "@/lib/shareMessages";
 import type { ShareVisualFormat } from "@/lib/shareVisualExport";
 import { OutlineButton } from "./OutlineButton";
+import { ShareBannerPanel } from "./ShareBannerPanel";
 import { ShareClipPanel } from "./ShareClipPanel";
 import { ShareVisualPanel } from "./ShareVisualPanel";
 
@@ -36,7 +37,7 @@ type PlatformShareModalProps = {
   onClose: () => void;
 };
 
-type ModalStep = "message" | "visual" | "clip";
+type ModalStep = "message" | "visual" | "clip" | "banner";
 
 type OpenAction = { label: string; url: string };
 
@@ -46,6 +47,7 @@ type PlatformConfig = {
   openActions: OpenAction[];
   hasVisual: boolean;
   hasClip: boolean;
+  hasBanner: boolean;
   showLinkField: boolean;
   visualFormat?: ShareVisualFormat;
   textareaRows: number;
@@ -59,6 +61,7 @@ const PLATFORM_CONFIG: Record<SharePlatform, PlatformConfig> = {
     openActions: [{ label: "Open WhatsApp", url: WHATSAPP_WEB_URL }],
     hasVisual: true,
     hasClip: true,
+    hasBanner: false,
     showLinkField: false,
     visualFormat: "whatsapp",
     textareaRows: 9,
@@ -70,6 +73,7 @@ const PLATFORM_CONFIG: Record<SharePlatform, PlatformConfig> = {
     openActions: [{ label: "Open LinkedIn", url: LINKEDIN_WEB_URL }],
     hasVisual: true,
     hasClip: true,
+    hasBanner: true,
     showLinkField: false,
     visualFormat: "linkedin",
     textareaRows: 14,
@@ -81,6 +85,7 @@ const PLATFORM_CONFIG: Record<SharePlatform, PlatformConfig> = {
     openActions: [{ label: "Open Instagram", url: INSTAGRAM_WEB_URL }],
     hasVisual: true,
     hasClip: true,
+    hasBanner: false,
     showLinkField: true,
     visualFormat: "instagram",
     textareaRows: 10,
@@ -92,6 +97,7 @@ const PLATFORM_CONFIG: Record<SharePlatform, PlatformConfig> = {
     openActions: [{ label: "Open TikTok", url: TIKTOK_WEB_URL }],
     hasVisual: true,
     hasClip: true,
+    hasBanner: false,
     showLinkField: true,
     visualFormat: "tiktok",
     textareaRows: 10,
@@ -103,6 +109,7 @@ const PLATFORM_CONFIG: Record<SharePlatform, PlatformConfig> = {
     openActions: [{ label: "Open Snapchat", url: SNAPCHAT_WEB_URL }],
     hasVisual: true,
     hasClip: true,
+    hasBanner: false,
     showLinkField: true,
     visualFormat: "instagram",
     textareaRows: 10,
@@ -117,6 +124,7 @@ const PLATFORM_CONFIG: Record<SharePlatform, PlatformConfig> = {
     ],
     hasVisual: false,
     hasClip: false,
+    hasBanner: false,
     showLinkField: false,
     textareaRows: 9,
     getMessage: getSlackTeamsShareMessage,
@@ -160,7 +168,8 @@ export function PlatformShareModal({
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
-      if (step === "visual" || step === "clip") setStep("message");
+      if (step === "visual" || step === "clip" || step === "banner")
+        setStep("message");
       else onClose();
     };
     window.addEventListener("keydown", onKey);
@@ -172,7 +181,9 @@ export function PlatformShareModal({
       ? config.title
       : step === "clip"
         ? "Download clip"
-        : config.visualTitle;
+        : step === "banner"
+          ? "Download banner"
+          : config.visualTitle;
   const dialogId = `${platform}-share-title`;
 
   return (
@@ -185,7 +196,9 @@ export function PlatformShareModal({
     >
       <div
         className={`flex max-h-[min(92dvh,90vh)] w-full max-w-[100vw] flex-col gap-4 overflow-y-auto rounded-t-3xl border-2 border-black bg-[var(--bg)] p-4 shadow-lg sm:max-h-[90vh] sm:max-w-lg sm:rounded-3xl sm:p-6 ${
-          step === "visual" || step === "clip" ? "md:max-w-xl" : ""
+          step === "visual" || step === "clip" || step === "banner"
+            ? "md:max-w-xl"
+            : ""
         }`}
         onClick={(e) => e.stopPropagation()}
       >
@@ -261,7 +274,13 @@ export function PlatformShareModal({
               ))}
               {config.hasVisual && config.visualFormat ? (
                 <div
-                  className={`grid w-full gap-3 ${config.hasClip ? "grid-cols-2" : "grid-cols-1"}`}
+                  className={`grid w-full gap-3 ${
+                    config.hasClip && config.hasBanner
+                      ? "grid-cols-3"
+                      : config.hasClip || config.hasBanner
+                        ? "grid-cols-2"
+                        : "grid-cols-1"
+                  }`}
                 >
                   <OutlineButton
                     type="button"
@@ -279,6 +298,15 @@ export function PlatformShareModal({
                       Download clip
                     </OutlineButton>
                   ) : null}
+                  {config.hasBanner ? (
+                    <OutlineButton
+                      type="button"
+                      onClick={() => setStep("banner")}
+                      className="w-full"
+                    >
+                      Banner
+                    </OutlineButton>
+                  ) : null}
                 </div>
               ) : null}
             </div>
@@ -288,7 +316,9 @@ export function PlatformShareModal({
             format={config.visualFormat}
             onBack={() => setStep("message")}
           />
-        ) : config.visualFormat ? (
+        ) : step === "banner" ? (
+          <ShareBannerPanel onBack={() => setStep("message")} />
+        ) : step === "visual" && config.visualFormat ? (
           <ShareVisualPanel
             format={config.visualFormat}
             onBack={() => setStep("message")}

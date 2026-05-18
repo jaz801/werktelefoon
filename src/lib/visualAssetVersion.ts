@@ -1,3 +1,3 @@
-// Bump when public/share-visual.png or public/poster.pdf changes (HTTP + in-memory cache bust).
-// 20260517-v3: WhatsApp visual.png + Poster.png → share-visual, poster.pdf, Remotion clips.
-export const VISUAL_ASSET_VERSION = "20260517-v3";
+// Bump when share-visual, linkedin-banner, poster.pdf, or public/clips/*.mp4 change.
+// 20260518-v3: high-quality canvas scaling; re-run npm run render:clips for sharper MP4s.
+export const VISUAL_ASSET_VERSION = "20260518-v3";

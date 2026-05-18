@@ -1,4 +1,6 @@
 // Shared canvas BG color swap for share visual + poster PDF exports.
+// Recurring: soft scaled exports — configureCanvasScaling in drawContain/drawCover.
+import { configureCanvasScaling } from "./canvasExport";
 import { RING_COLORS, type RingColorKey } from "./ringGeometry";
 
 const BG_TOLERANCE = 52;
@@ -83,6 +85,7 @@ export function drawCover(
   const drawH = srcH * scale;
   const dx = (outW - drawW) / 2;
   const dy = (outH - drawH) / 2;
+  configureCanvasScaling(ctx, srcW, srcH, drawW, drawH);
   ctx.drawImage(source, dx, dy, drawW, drawH);
 }
 
@@ -142,5 +145,6 @@ export function drawContain(
   const drawH = srcH * scale;
   const dx = (outW - drawW) / 2;
   const dy = (outH - drawH) / 2;
+  configureCanvasScaling(ctx, srcW, srcH, drawW, drawH);
   ctx.drawImage(source, srcX, srcY, srcW, srcH, dx, dy, drawW, drawH);
 }

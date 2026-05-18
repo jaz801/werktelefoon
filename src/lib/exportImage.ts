@@ -1,7 +1,6 @@
 // Bug fix: export at full photo resolution (preview layout × scale), not 360×420 only.
 // Recurring: ring export looked soft — canvas was preview-sized; use exportScale from imageLayout.
-// Bug fix: removed ring label text; black outline inside + outside colored band on export.
-// Export: matches preview — black frame, photo inside ring circle, ring on top.
+import { configureCanvasScaling } from "./canvasExport";
 import type { DisplayLayout } from "./imageLayout";
 import {
   RING_OUTLINE_COLOR,
@@ -64,21 +63,25 @@ export async function exportComposedImage(
   ctx.arc(cx, cy, r, 0, Math.PI * 2);
   ctx.clip();
 
-  const drawAtNative =
-    displayLayout &&
-    Math.abs(displayLayout.displayWidth * s - image.naturalWidth) < 2 &&
-    Math.abs(displayLayout.displayHeight * s - image.naturalHeight) < 2;
-
-  ctx.imageSmoothingEnabled = !drawAtNative;
   if (displayLayout) {
+    const drawW = displayLayout.displayWidth * s;
+    const drawH = displayLayout.displayHeight * s;
+    configureCanvasScaling(
+      ctx,
+      image.naturalWidth,
+      image.naturalHeight,
+      drawW,
+      drawH,
+    );
     ctx.drawImage(
       image,
       displayLayout.offsetX * s,
       displayLayout.offsetY * s,
-      displayLayout.displayWidth * s,
-      displayLayout.displayHeight * s,
+      drawW,
+      drawH,
     );
   } else {
+    configureCanvasScaling(ctx, image.naturalWidth, image.naturalHeight, outW, outH);
     ctx.drawImage(image, 0, 0, outW, outH);
   }
   ctx.restore();
@@ -90,13 +93,8 @@ export async function exportComposedImage(
   );
   ctx.drawImage(overlay, 0, 0, outW, outH);
 
-  return new Promise((resolve, reject) => {
-    canvas.toBlob(
-      (blob) => (blob ? resolve(blob) : reject(new Error("Export mislukt"))),
-      "image/png",
-      1,
-    );
-  });
+  const { exportCanvasToPngBlob } = await import("./canvasExport");
+  return exportCanvasToPngBlob(canvas);
 }
 
 function loadImage(src: string): Promise<HTMLImageElement> {

@@ -1,6 +1,6 @@
-// Bug fix: visual download uses public/share-visual.png (WhatsApp example); bump VISUAL_ASSET_VERSION on asset swap.
+// Bug fix: PNG exports at platform pixel size with high-quality scaling (TikTok 9:16, IG 1:1).
 // Recurring: platform "cover" crops QR/text — use vertical-fit or instagram-square instead.
-// Export share visual: BG color swap; per-platform dimensions.
+import { configureCanvasScaling, exportCanvasToPngBlob } from "./canvasExport";
 import { VISUAL_ASSET_VERSION } from "./visualAssetVersion";
 import { RING_COLORS, type RingColorKey } from "./ringGeometry";
 import {
@@ -195,6 +195,13 @@ export async function renderShareVisual(
   if (spec.mode === "native") {
     canvas.width = source.width;
     canvas.height = source.height;
+    configureCanvasScaling(
+      ctx,
+      source.width,
+      source.height,
+      canvas.width,
+      canvas.height,
+    );
     ctx.drawImage(source, 0, 0);
     return;
   }
@@ -238,11 +245,5 @@ export async function exportShareVisualBlob(
 ): Promise<Blob> {
   const canvas = document.createElement("canvas");
   await renderShareVisual(format, colorKey, canvas, options);
-  return new Promise((resolve, reject) => {
-    canvas.toBlob(
-      (blob) => (blob ? resolve(blob) : reject(new Error("Export mislukt"))),
-      "image/png",
-      1,
-    );
-  });
+  return exportCanvasToPngBlob(canvas);
 }

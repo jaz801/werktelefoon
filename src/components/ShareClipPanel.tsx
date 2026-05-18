@@ -1,4 +1,4 @@
-// Bug fix: clip step shows pre-rendered 7s MP4 (autoplay) + download; WA/LinkedIn use 4:5 clip, no aspect picker.
+// Bug fix: clip download serves pre-rendered MP4 bytes directly (no fetch re-wrap).
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -36,17 +36,16 @@ export function ShareClipPanel({ format, onBack }: ShareClipPanelProps) {
     setVideoError(false);
   }, [clipUrl]);
 
-  const handleDownload = useCallback(async () => {
+  const handleDownload = useCallback(() => {
     setDownloading(true);
     try {
-      const response = await fetch(clipUrl);
-      if (!response.ok) throw new Error("Clip niet gevonden");
-      const blob = await response.blob();
       const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
+      link.href = clipUrl;
       link.download = getPreRenderedClipDownloadName(variant, format);
+      link.rel = "noopener";
+      document.body.appendChild(link);
       link.click();
-      URL.revokeObjectURL(link.href);
+      link.remove();
     } catch {
       setVideoError(true);
     } finally {

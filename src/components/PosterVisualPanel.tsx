@@ -1,4 +1,4 @@
-// Bug fix: poster preview uses scaled canvas so PDF loads on mobile Safari.
+// Bug fix: poster print/download use full-resolution export (not scaled preview canvas).
 // Print flow — poster.pdf with brand BG color picker + download/print.
 "use client";
 
@@ -68,17 +68,30 @@ export function PosterVisualPanel({
     }
   }, [posterType, color, option.downloadName]);
 
-  const handlePrint = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || loading) return;
-    const dataUrl = canvas.toDataURL("image/png");
-    const win = window.open("", "_blank");
-    if (!win) return;
-    win.document.write(
-      `<html><head><title>${option.label}</title></head><body style="margin:0;display:flex;justify-content:center;"><img src="${dataUrl}" style="max-width:100%;height:auto;" onload="window.print();window.close();" /></body></html>`,
-    );
-    win.document.close();
-  }, [loading, option.label]);
+  const handlePrint = useCallback(async () => {
+    if (loading) return;
+    setError(null);
+    try {
+      const blob = await exportPosterVisualBlob(posterType, color);
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () =>
+          typeof reader.result === "string"
+            ? resolve(reader.result)
+            : reject(new Error("Print mislukt"));
+        reader.onerror = () => reject(new Error("Print mislukt"));
+        reader.readAsDataURL(blob);
+      });
+      const win = window.open("", "_blank");
+      if (!win) return;
+      win.document.write(
+        `<html><head><title>${option.label}</title></head><body style="margin:0;display:flex;justify-content:center;"><img src="${dataUrl}" style="max-width:100%;height:auto;" onload="window.print();window.close();" /></body></html>`,
+      );
+      win.document.close();
+    } catch {
+      setError("Print mislukt. Probeer opnieuw.");
+    }
+  }, [loading, posterType, color, option.label]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -123,7 +136,7 @@ export function PosterVisualPanel({
         </OutlineButton>
         <OutlineButton
           type="button"
-          onClick={handlePrint}
+          onClick={() => void handlePrint()}
           disabled={loading}
           className="w-full sm:flex-1"
         >
