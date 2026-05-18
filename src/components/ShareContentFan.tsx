@@ -21,7 +21,7 @@ export function ShareContentFan() {
         aspectRatio: `${PREVIEW_WIDTH} / ${PREVIEW_HEIGHT}`,
         minHeight: `min(${PREVIEW_HEIGHT}px, calc((100vw - 3rem) * ${PREVIEW_HEIGHT} / ${PREVIEW_WIDTH}))`,
       }}
-      aria-label="Voorbeelden: roze visual, gele visual en blauwe video"
+      aria-label="Voorbeelden: roze visual, gele visual en blauwe animatie"
     >
       <div
         className={`absolute left-1/2 top-1/2 ${CARD_W}`}
