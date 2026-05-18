@@ -8,6 +8,7 @@
 // Update: “guerilla campagne” formulering (WhatsApp, LinkedIn, Slack/Teams).
 // Bug fix: WhatsApp open — web.whatsapp.com on desktop; whatsapp:// on mobile portrait (native app only).
 // Update: ease-zin (voorgeschreven berichten + content) in alle share-teksten.
+// Update: campagne-copy — “hoeveel procent dit jaar”, Werktelefoon-tagline, socials-narratief (geen guerilla-framing).
 // Share copy for social buttons; site URL injected at runtime where noted.
 
 /** Link shown in share modals and appended to copied messages. */
@@ -15,6 +16,38 @@ export const SHARE_SITE_URL = "https://rebrand.ly/werktelefoon";
 
 const SOCIAL_HASHTAGS =
   "#werktelefoon #guerillacampagne #takeover #werkveranderaars #werkveranderaar";
+
+export const OPENING_BEFORE_STAT =
+  "Hoeveel procent van de tijd voelde je je dit jaar écht goed op je werk?";
+
+export const OPENING_STAT_LEAD = "De meeste mensen komen niet verder dan";
+
+export const POSSIBILITY_COPY =
+  "Moet je nagaan wat er voor onszelf, organisaties en de wereld mogelijk is als we dit percentage samen verhogen.";
+
+export const CAMPAIGN_BEFORE_STAT =
+  "Daarom kleuren we deze week de socials. In 7 dagen zetten we samen met";
+
+export const CAMPAIGN_AFTER_STAT =
+  "werkveranderaars de lijnen van De Werktelefoon open.";
+
+export const WERKTELEFOON_TAGLINE =
+  "De Werktelefoon is een onafhankelijke plek voor iedereen die werkt, waar je altijd terecht kan.";
+
+export const BELIEF_CTA_COPY =
+  "Als ook jij gelooft dat werk anders kan, wil je hier bij zijn.";
+
+export const CORE_OPENING = `${OPENING_BEFORE_STAT} ${OPENING_STAT_LEAD} 5%.`;
+
+export const CORE_CAMPAIGN = `${CAMPAIGN_BEFORE_STAT} 100.000 ${CAMPAIGN_AFTER_STAT} ${WERKTELEFOON_TAGLINE}`;
+
+const CORE_NARRATIVE = `${CORE_OPENING}
+
+${POSSIBILITY_COPY}
+
+${CORE_CAMPAIGN}
+
+${BELIEF_CTA_COPY}`;
 
 export const NETWORK_ASK_LINE_1 =
   "Om dit te halen hebben we jouw netwerk nodig.";
@@ -31,11 +64,7 @@ ${NETWORK_ASK_LINE_2}
 
 ${SHARE_EASE_COPY}`;
 
-const INSTAGRAM_TIKTOK_SNAP_COPY = `Wanneer voelde jij je voor het laatst écht goed op je werk?
-
-De meeste mensen haken af bij 5%.
-
-Deze week kleuren we de socials. In 7 dagen zetten 100.000 werkveranderaars de lijnen van De Werktelefoon open.
+const INSTAGRAM_TIKTOK_SNAP_COPY = `${CORE_NARRATIVE}
 
 ${NETWORK_ASK_COPY}
 
@@ -45,15 +74,13 @@ ${SOCIAL_HASHTAGS}`;
 
 const WHATSAPP_COPY = `Hey!
 
-Deze week doen we een guerilla campagne voor de Werktelefoon: in 7 dagen willen 100.000 werkveranderaars de lijnen openzetten.
+${CORE_NARRATIVE}
 
 ${NETWORK_ASK_COPY}`;
 
 const SLACK_TEAMS_COPY = `Hey, ken jij De Werktelefoon al?
 
-Deze week doen we een guerilla campagne voor De Werktelefoon: in 7 dagen willen 100.000 werkveranderaars de lijnen openzetten.
-
-Wanneer voelde jij je voor het laatst écht goed op je werk? De meeste mensen komen niet verder dan 5%.
+${CORE_NARRATIVE}
 
 ${NETWORK_ASK_COPY}`;
 
@@ -62,11 +89,7 @@ export function getWhatsAppShareMessage(siteUrl: string): string {
 }
 
 export function getLinkedInShareMessage(siteUrl: string): string {
-  return `Wanneer voelde jij je dit jaar voor het laatst écht goed op je werk?
-
-De meeste mensen komen niet verder dan 5%.
-
-Daarom doe ik deze week mee aan de guerilla campagne van De Werktelefoon. In 7 dagen willen 100.000 werkveranderaars de lijnen openzetten.
+  return `${CORE_NARRATIVE}
 
 ${NETWORK_ASK_COPY}
 
