@@ -1,5 +1,9 @@
 // Bug fix: share link uses campaign rebrand URL, not window.location (localhost in dev).
-// Update: IG/TikTok/Snap, LinkedIn en Slack/Teams copy-paste teksten (guerrilla-campagne).
+// Bug fix: guerrilla → guerilla in all share copy and hashtags (brand spelling).
+// Update: IG/TikTok/Snap, LinkedIn en Slack/Teams copy-paste teksten (guerilla-campagne).
+// Update: netwerk/content-zinnen in LinkedIn + Slack; €1,99-regels uit alle share-teksten.
+// Update: IG/TikTok/Snap — expliciet dat 100k alleen lukt als iedereen deelt in ieders netwerk.
+// Update: zachtere netwerk-CTA — jouw netwerk nodig, delen met 1–2 personen of in groep.
 // Update: rebrand link → https://rebrand.ly/werktelefoon (all channels + kopieer-link knop).
 // Share copy for social buttons; site URL injected at runtime where noted.
 
@@ -7,42 +11,54 @@
 export const SHARE_SITE_URL = "https://rebrand.ly/werktelefoon";
 
 const SOCIAL_HASHTAGS =
-  "#werktelefoon #guerrillacampagne #takeover #werkveranderaars #werkveranderaar";
+  "#werktelefoon #guerillacampagne #takeover #werkveranderaars #werkveranderaar";
+
+export const NETWORK_ASK_LINE_1 =
+  "Om dit te halen hebben we jouw netwerk nodig.";
+
+export const NETWORK_ASK_LINE_2 =
+  "Als jij dit kunt delen met 1 of 2 personen, of in een groep, help je ons enorm.";
+
+const NETWORK_ASK_COPY = `${NETWORK_ASK_LINE_1}
+
+${NETWORK_ASK_LINE_2}`;
 
 const INSTAGRAM_TIKTOK_SNAP_COPY = `Wanneer voelde jij je voor het laatst écht goed op je werk?
-De meeste mensen komen niet verder dan 5%.
 
-Deze week nemen we LinkedIn over. In 7 dagen. Met 100.000 Werkveranderaars. Voor €1,99 doe jij mee.
+De meeste mensen haken af bij 5%.
+
+Deze week kleuren we de socials. In 7 dagen zetten 100.000 werkveranderaars de lijnen van De Werktelefoon open.
+
+${NETWORK_ASK_COPY} Kant-en-klare content staat klaar om door te sturen.
 
 Link in bio 👉 De Werktelefoon
 
 ${SOCIAL_HASHTAGS}`;
 
-const WHATSAPP_SLACK_COPY = `Hey,
-een vriendin van mij neemt deze week LinkedIn over met een guerrillacampagne om de Werktelefoon landelijk LIVE te krijgen.
-Je kunt mij helpen door dit bericht te delen in één of meerdere van je groepen op WhatsApp, Slack en Teams.`;
+const WHATSAPP_COPY = `Hey! Deze week is guerilla voor De Werktelefoon: in 7 dagen willen 100.000 werkveranderaars de lijnen openzetten.
 
-const SLACK_TEAMS_COPY = `Hey, ken jij de Werktelefoon al?
+${NETWORK_ASK_COPY} Kant-en-klare content staat klaar om te delen.`;
 
-Deze week nemen we LinkedIn over om in 7 dagen met 100.000 werkveranderaars de lijnen van De Werktelefoon open te zetten.
+const SLACK_TEAMS_COPY = `Hey, ken jij De Werktelefoon al?
+
+Deze week kleuren we LinkedIn met een guerillacampagne: in 7 dagen willen 100.000 werkveranderaars de lijnen openzetten.
 
 Wanneer voelde jij je voor het laatst écht goed op je werk? De meeste mensen komen niet verder dan 5%.
 
-Kan werkend Nederland op jou rekenen? Doe mee voor €1,99.`;
+${NETWORK_ASK_COPY}`;
 
 export function getWhatsAppShareMessage(siteUrl: string): string {
-  return `${WHATSAPP_SLACK_COPY}\n${siteUrl}`;
+  return `${WHATSAPP_COPY}\n\n${siteUrl}`;
 }
 
 export function getLinkedInShareMessage(siteUrl: string): string {
   return `Wanneer voelde jij je dit jaar voor het laatst écht goed op je werk?
+
 De meeste mensen komen niet verder dan 5%.
 
-Daarom doe ik deze week mee aan de guerrilla van De Werktelefoon.
-In 7 dagen willen we met 100.000 werkveranderaars de lijnen open zetten.
+Daarom doe ik deze week mee aan de guerilla van De Werktelefoon. In 7 dagen willen 100.000 werkveranderaars de lijnen openzetten.
 
-Voor €1,99 doe jij mee. Minder dan een kop koffie.
-Kan werkend Nederland op jou rekenen?
+${NETWORK_ASK_COPY} Kant-en-klare content staat klaar om te delen.
 
 ${siteUrl}`;
 }

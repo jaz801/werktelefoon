@@ -13,7 +13,7 @@ type ShareClipCardProps = {
 
 export function ShareClipCard({ className = "" }: ShareClipCardProps) {
   const [videoError, setVideoError] = useState(false);
-  const clipUrl = getPreRenderedClipUrl(CLIP_VARIANT);
+  const clipUrl = getPreRenderedClipUrl(CLIP_VARIANT, "blue");
 
   return (
     <div className={`${SHARE_CARD_CLASS} ${className}`.trim()}>

@@ -1,10 +1,10 @@
-// Generates PNG frames for Remotion clip pre-render (blue theme, per platform size).
-// Bug fix: regenerate after public/share-visual.png (WhatsApp example) changes — npm run render:clips.
+// Bug fix: PNG clip frames per variant × ring color for Remotion MP4/GIF pre-render.
+// Regenerate after share-visual.png changes — npm run render:clips.
 import { createCanvas, loadImage } from "@napi-rs/canvas";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { RING_COLORS } from "../src/lib/ringGeometry";
+import { RING_COLOR_ORDER, RING_COLORS, type RingColorKey } from "../src/lib/ringGeometry";
 import {
   applyBackgroundColor,
   drawContain,
@@ -24,11 +24,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
 const FRAMES_DIR = path.join(ROOT, "public", "clips", "frames");
 const SOURCE_PATH = path.join(ROOT, "public", "share-visual.png");
-const COLOR_KEY = "blue" as const;
 
 function renderContentFit(
   source: ReturnType<typeof createCanvas>,
   sourceBg: Rgb,
+  colorKey: RingColorKey,
   outW: number,
   outH: number,
 ): ReturnType<typeof createCanvas> {
@@ -45,62 +45,69 @@ function renderContentFit(
     bounds.h,
     outW,
     outH,
-    RING_COLORS[COLOR_KEY],
+    RING_COLORS[colorKey],
     bounds.x,
     bounds.y,
   );
   return canvas;
 }
 
-async function getColoredSource() {
+async function getColoredSource(colorKey: RingColorKey) {
   const image = await loadImage(SOURCE_PATH);
   const canvas = createCanvas(image.width, image.height);
   const ctx = canvas.getContext("2d")!;
   ctx.drawImage(image, 0, 0);
   const sourceBg = sampleSourceBackground(ctx, image.width, image.height);
   const imageData = ctx.getImageData(0, 0, image.width, image.height);
-  applyBackgroundColor(imageData, sourceBg, COLOR_KEY);
+  applyBackgroundColor(imageData, sourceBg, colorKey);
   ctx.putImageData(imageData, 0, 0);
   return { canvas, sourceBg };
 }
 
 async function main() {
   fs.mkdirSync(FRAMES_DIR, { recursive: true });
-  const { canvas: source, sourceBg } = await getColoredSource();
 
-  const exports: { name: string; canvas: ReturnType<typeof createCanvas> }[] = [
-    {
-      name: "instagram-4-5.png",
-      canvas: createCanvas(INSTAGRAM_VISUAL_WIDTH, INSTAGRAM_VISUAL_HEIGHT),
-    },
-    {
-      name: "instagram-1-1.png",
-      canvas: renderContentFit(
-        source,
-        sourceBg,
-        INSTAGRAM_SQUARE_SIZE,
-        INSTAGRAM_SQUARE_SIZE,
-      ),
-    },
-    {
-      name: "tiktok.png",
-      canvas: renderContentFit(
-        source,
-        sourceBg,
-        TIKTOK_VISUAL_WIDTH,
-        TIKTOK_VISUAL_HEIGHT,
-      ),
-    },
-  ];
+  for (const colorKey of RING_COLOR_ORDER) {
+    const { canvas: source, sourceBg } = await getColoredSource(colorKey);
 
-  const nativeCtx = exports[0].canvas.getContext("2d")!;
-  nativeCtx.drawImage(source as unknown as CanvasImageSource, 0, 0);
+    const variants: {
+      name: string;
+      canvas: ReturnType<typeof createCanvas>;
+    }[] = [
+      {
+        name: `instagram-4-5-${colorKey}.png`,
+        canvas: createCanvas(INSTAGRAM_VISUAL_WIDTH, INSTAGRAM_VISUAL_HEIGHT),
+      },
+      {
+        name: `instagram-1-1-${colorKey}.png`,
+        canvas: renderContentFit(
+          source,
+          sourceBg,
+          colorKey,
+          INSTAGRAM_SQUARE_SIZE,
+          INSTAGRAM_SQUARE_SIZE,
+        ),
+      },
+      {
+        name: `tiktok-${colorKey}.png`,
+        canvas: renderContentFit(
+          source,
+          sourceBg,
+          colorKey,
+          TIKTOK_VISUAL_WIDTH,
+          TIKTOK_VISUAL_HEIGHT,
+        ),
+      },
+    ];
 
-  for (const item of exports) {
-    const outPath = path.join(FRAMES_DIR, item.name);
-    const buffer = item.canvas.toBuffer("image/png");
-    fs.writeFileSync(outPath, buffer);
-    console.log(`Wrote ${outPath}`);
+    const nativeCtx = variants[0].canvas.getContext("2d")!;
+    nativeCtx.drawImage(source as unknown as CanvasImageSource, 0, 0);
+
+    for (const item of variants) {
+      const outPath = path.join(FRAMES_DIR, item.name);
+      fs.writeFileSync(outPath, item.canvas.toBuffer("image/png"));
+      console.log(`Wrote ${outPath}`);
+    }
   }
 }
 

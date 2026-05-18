@@ -1,7 +1,9 @@
 // Bug fix: share section — upload left, fanned pink / yellow / blue (video) cards right.
 // Bug fix: #share-content scroll target for animated "content" link in intro copy.
+// Bug fix: SiteFooter at bottom with contact details and social links.
 import { IntroSection } from "@/components/IntroSection";
 import { ShareContentGrid } from "@/components/ShareContentGrid";
+import { SiteFooter } from "@/components/SiteFooter";
 import { SocialButtons } from "@/components/SocialButtons";
 
 export default function Home() {
@@ -15,6 +17,7 @@ export default function Home() {
         <ShareContentGrid />
         <SocialButtons />
       </section>
+      <SiteFooter />
     </main>
   );
 }

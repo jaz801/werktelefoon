@@ -1,4 +1,4 @@
-// Bug fix: intro "Lees verder" opens Plug&Pay checkout (was smooth-scroll to #read-more).
+// Bug fix: intro "Ik ben erbij" opens Plug&Pay checkout (was Lees verder / #read-more scroll).
 "use client";
 
 import { OutlineButton } from "./OutlineButton";
@@ -16,9 +16,9 @@ export function ReadMoreButton() {
         target="_blank"
         rel="noopener noreferrer"
         className="w-full max-w-md font-[family-name:var(--font-indivisible)] sm:w-auto"
-        aria-label="Lees verder en word werkveranderaar"
+        aria-label="Ik ben erbij en word werkveranderaar"
       >
-        Lees verder →
+        Ik ben erbij →
       </OutlineButton>
     </div>
   );
