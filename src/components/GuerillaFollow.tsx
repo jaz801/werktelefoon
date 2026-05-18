@@ -3,6 +3,7 @@
 // Bug fix: Anique photo updated to anique-foto.png (replaces anique-werktelefoon.png).
 // Bug fix: renamed GuerrillaFollow → GuerillaFollow (brand spelling: Guerilla, not Guerrilla).
 // Update: dubbele deel/content-zinnen verwijderd (staan nu in IntroCopy).
+// Update: LinkedIn-updates copy — "2 keer per dag" → "deze week".
 import Image from "next/image";
 import { OutlineButton } from "./OutlineButton";
 import { READ_MORE_SECTION_ID } from "./ReadMoreButton";
@@ -19,7 +20,7 @@ export function GuerillaFollow() {
         VOLG DE GUERILLA CAMPAGNE
       </h2>
       <p className="mt-3 font-[family-name:var(--font-indivisible)] text-base font-semibold sm:text-lg">
-        Daar deel ik 2 keer per dag updates.
+        Daar deel ik deze week updates.
       </p>
 
       <div className="mt-6 flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-8">

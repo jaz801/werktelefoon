@@ -1,4 +1,5 @@
 // Writes public/posters/poster.png fallback (macOS sips) for mobile when PDF.js fails.
+// Source: repo-root poster.png → public/poster.pdf (sips) + public/posters/poster.png (copy).
 import { execSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
