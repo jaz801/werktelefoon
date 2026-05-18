@@ -42,7 +42,9 @@ Link in bio 👉 De Werktelefoon
 
 ${SOCIAL_HASHTAGS}`;
 
-const WHATSAPP_COPY = `Hey! Deze week doen we een guerilla campagne voor de Werktelefoon: in 7 dagen willen 100.000 werkveranderaars de lijnen openzetten.
+const WHATSAPP_COPY = `Hey!
+
+Deze week doen we een guerilla campagne voor de Werktelefoon: in 7 dagen willen 100.000 werkveranderaars de lijnen openzetten.
 
 ${NETWORK_ASK_COPY}`;
 
