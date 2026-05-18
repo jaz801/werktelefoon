@@ -2,8 +2,8 @@
 // Bug fix: Anique subtitle + challenge copy; scroll target #read-more for Lees verder.
 // Bug fix: Anique photo updated to anique-foto.png (replaces anique-werktelefoon.png).
 // Bug fix: renamed GuerrillaFollow → GuerillaFollow (brand spelling: Guerilla, not Guerrilla).
+// Update: dubbele deel/content-zinnen verwijderd (staan nu in IntroCopy).
 import Image from "next/image";
-import { ContentScrollLink } from "./ContentScrollLink";
 import { OutlineButton } from "./OutlineButton";
 import { READ_MORE_SECTION_ID } from "./ReadMoreButton";
 
@@ -16,7 +16,7 @@ export function GuerillaFollow() {
       className="mt-10 scroll-mt-8 border-t border-black/10 pt-10 sm:scroll-mt-10"
     >
       <h2 className="font-[family-name:var(--font-newake)] text-2xl uppercase tracking-wide text-[var(--text)] sm:text-3xl">
-        VOLG DE GUERILLA
+        VOLG DE GUERILLA CAMPAGNE
       </h2>
       <p className="mt-3 font-[family-name:var(--font-indivisible)] text-base font-semibold sm:text-lg">
         Daar deel ik 2 keer per dag updates.
@@ -59,14 +59,6 @@ export function GuerillaFollow() {
       <h2 className="mt-10 font-[family-name:var(--font-newake)] text-2xl uppercase tracking-wide text-[var(--text)] sm:text-3xl">
         WERKVERANDERAAR CHALLENGE
       </h2>
-      <p className="mt-3 font-[family-name:var(--font-indivisible)] text-base font-semibold leading-relaxed sm:text-lg">
-        Je zet samen met ons de lijnen open door dit met één of twee mensen of in
-        een groep te delen.
-      </p>
-      <p className="mt-3 font-[family-name:var(--font-indivisible)] text-base font-semibold leading-relaxed sm:text-lg">
-        Om het jou makkelijk te maken hebben we <ContentScrollLink />, afbeeldingen
-        en posters voor je klaarstaan die je op social media kunt delen.
-      </p>
       <p className="mt-3 font-[family-name:var(--font-indivisible)] text-base font-semibold leading-relaxed sm:text-lg">
         De 10 werkenden en organisaties die - zodra 100.000 werkveranderaars zich
         hebben aangesloten - de meeste mensen in beweging hebben gebracht, krijgen
