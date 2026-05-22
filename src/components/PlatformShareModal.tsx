@@ -1,6 +1,7 @@
 // Bug fix: LinkedIn — Banner + GIF download; IG/TikTok/Snap/WA — visual + clip on message step.
 // Bug fix: WhatsApp “Open” — web.whatsapp.com on desktop; whatsapp:// on mobile portrait.
 // Update: tip onder “Deel via …” — Tip: voiceberichten werken nog beter.
+// Update: WhatsApp/Slack textarea — meer rijen voor nieuwe persoonlijke share-copy.
 "use client";
 
 const SHARE_VOICE_TIP = "Tip: voiceberichten werken nog beter.";
@@ -75,7 +76,7 @@ const PLATFORM_CONFIG: Record<SharePlatform, PlatformConfig> = {
     hasGif: false,
     showLinkField: false,
     visualFormat: "whatsapp",
-    textareaRows: 9,
+    textareaRows: 16,
     getMessage: getWhatsAppShareMessage,
   },
   linkedin: {
@@ -88,7 +89,7 @@ const PLATFORM_CONFIG: Record<SharePlatform, PlatformConfig> = {
     hasGif: true,
     showLinkField: false,
     visualFormat: "linkedin",
-    textareaRows: 14,
+    textareaRows: 16,
     getMessage: getLinkedInShareMessage,
   },
   instagram: {
@@ -101,7 +102,7 @@ const PLATFORM_CONFIG: Record<SharePlatform, PlatformConfig> = {
     hasGif: false,
     showLinkField: true,
     visualFormat: "instagram",
-    textareaRows: 10,
+    textareaRows: 14,
     getMessage: getInstagramShareMessage,
   },
   tiktok: {
@@ -114,7 +115,7 @@ const PLATFORM_CONFIG: Record<SharePlatform, PlatformConfig> = {
     hasGif: false,
     showLinkField: true,
     visualFormat: "tiktok",
-    textareaRows: 10,
+    textareaRows: 14,
     getMessage: getTikTokShareMessage,
   },
   snapchat: {
@@ -127,7 +128,7 @@ const PLATFORM_CONFIG: Record<SharePlatform, PlatformConfig> = {
     hasGif: false,
     showLinkField: true,
     visualFormat: "instagram",
-    textareaRows: 10,
+    textareaRows: 14,
     getMessage: getSnapchatShareMessage,
   },
   slack: {
@@ -142,7 +143,7 @@ const PLATFORM_CONFIG: Record<SharePlatform, PlatformConfig> = {
     hasBanner: false,
     hasGif: false,
     showLinkField: false,
-    textareaRows: 9,
+    textareaRows: 16,
     getMessage: getSlackTeamsShareMessage,
   },
 };

@@ -5,6 +5,8 @@
 // Update: “guerilla campagne” formulering (WhatsApp, LinkedIn, Slack/Teams).
 // Bug fix: WhatsApp open — web.whatsapp.com on desktop; whatsapp:// on mobile portrait (native app only).
 // Update: campagne-copy — eerlijk op werk, €1,99 community, 100k naar overheid, socials-narratief.
+// Update: WhatsApp — persoonlijke vraag-copy met {NAAM}, guerilla-campagne en 100k werkveranderaars.
+// Update: Slack — zelfde copy als WhatsApp; LinkedIn/IG/TikTok/Snap — werkvloer-narratief + hashtags.
 // Share copy for social buttons; site URL injected at runtime where noted.
 
 /** Link shown in share modals and appended to copied messages. */
@@ -43,70 +45,74 @@ export const CLOSING_COPY = "Laten we het samen mogelijk maken.";
 
 export const CORE_MOVEMENT = `${MOVEMENT_BEFORE_STAT} 100.000 ${MOVEMENT_AFTER_STAT}`;
 
-const CORE_NARRATIVE = `${BRAND_TITLE}
+function buildSocialShareCopy(siteUrl: string): string {
+  return `1 op de 3 werknemers durft zich niet uit te spreken of problemen aan te kaarten op de werkvloer.
 
-${OPENING_COPY}
+Veel mensen zwijgen uit angst voor hun baan of promotie en delen dit ook niet met vrienden of familie uit schaamte.
 
-${WORK_STRUGGLES_COPY}
+En dat terwijl je vanaf je 20e tot je pensioen de meeste tijd met collega's doorbrengt. Dat kan anders.
 
-${SILENCE_COPY}
+Daarom openen we deze week De Werktelefoon: een onafhankelijke, anonieme hulplijn die je advies en handvatten geeft. In welke fase van je carrière je ook zit.
 
-${LAUNCH_COPY}
+Om deze hulplijn van de grond te krijgen en zichtbaar te maken voor iedereen die in stilte worstelt, hebben we een flinke beweging nodig. Samen met 100.000 werkveranderaars kleuren we deze week de socials.
 
-${COMMUNITY_COPY}
+Geloof jij ook dat werk veiliger kan?
 
-${CORE_MOVEMENT}
+Deel dit bericht met 1 of 2 mensen in je netwerk. Op onze website vind je kant-en-klare content om direct te delen: ${siteUrl}
 
-${BELIEF_CTA_COPY}`;
+Laten we de werkvloer samen veiliger maken!`;
+}
 
-const SHARE_ASK_COPY = `${NETWORK_ASK_COPY}
-
-${CLOSING_COPY}`;
-
-const INSTAGRAM_TIKTOK_SNAP_COPY = `${CORE_NARRATIVE}
-
-${SHARE_ASK_COPY}
-
-Link in bio 👉 De Werktelefoon
+function buildInstagramTikTokSnapCopy(siteUrl: string): string {
+  return `${buildSocialShareCopy(siteUrl)}
 
 ${SOCIAL_HASHTAGS}`;
+}
 
-const WHATSAPP_COPY = `Hey!
+function buildWhatsAppCopy(siteUrl: string): string {
+  return `Hey {NAAM}!
 
-${CORE_NARRATIVE}
+Hoe gaat het met je?
 
-${SHARE_ASK_COPY}`;
+Zou je mij kunnen helpen?
 
-const SLACK_TEAMS_COPY = `Hey, ken jij De Werktelefoon al?
+Een vriendin van mij, voert een guerrilla-campagne op alle socials, waarbij ik aan de website heb meegewerkt. We openen de lijnen van De Werktelefoon: een onafhankelijke en anonieme hulplijn waar iedereen die werkt altijd terecht kan voor advies.
 
-${CORE_NARRATIVE}
+Dit initiatief is helaas hard nodig.
 
-${SHARE_ASK_COPY}`;
+Maar liefst 40% van de werkenden in Nederland ervaart de psychologische veiligheid als negatief en 1 op de 3 werknemers durft zich niet uit te spreken. Miss nog cijfers over mentale gezondheid?
+
+Om deze hulplijn écht succesvol van de grond te krijgen en zichtbaar te maken voor iedereen die in stilte worstelt, willen we in 7 dagen 100.000 werkveranderaars binnenhalen. Ons doel is om samen een landelijke beweging te starten en de socials te kleuren.
+
+Als ook jij gelooft dat werk veiliger en anders kan, hebben we jouw netwerk nodig om deze impact te maken.
+
+Als jij dit initiatief kunt delen met 1 of 2 personen, of misschien in een groep, help je ons enorm. Om het jou zo makkelijk mogelijk te maken, vind je op de website alles wat je nodig hebt.
+
+${siteUrl}
+
+Alvast super bedankt!`;
+}
 
 export function getWhatsAppShareMessage(siteUrl: string): string {
-  return `${WHATSAPP_COPY}\n\n${siteUrl}`;
+  return buildWhatsAppCopy(siteUrl);
 }
 
 export function getLinkedInShareMessage(siteUrl: string): string {
-  return `${CORE_NARRATIVE}
-
-${SHARE_ASK_COPY}
-
-${siteUrl}`;
+  return buildSocialShareCopy(siteUrl);
 }
 
-export function getInstagramShareMessage(_siteUrl: string): string {
-  return INSTAGRAM_TIKTOK_SNAP_COPY;
+export function getInstagramShareMessage(siteUrl: string): string {
+  return buildInstagramTikTokSnapCopy(siteUrl);
 }
 
 export const getTikTokShareMessage = getInstagramShareMessage;
 
-export function getSnapchatShareMessage(_siteUrl: string): string {
-  return INSTAGRAM_TIKTOK_SNAP_COPY;
+export function getSnapchatShareMessage(siteUrl: string): string {
+  return buildInstagramTikTokSnapCopy(siteUrl);
 }
 
 export function getSlackTeamsShareMessage(siteUrl: string): string {
-  return `${SLACK_TEAMS_COPY}\n\n${siteUrl}`;
+  return buildWhatsAppCopy(siteUrl);
 }
 
 export const WHATSAPP_WEB_URL = "https://web.whatsapp.com/";
