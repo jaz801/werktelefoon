@@ -8,7 +8,7 @@
 // Update: “guerilla campagne” formulering (WhatsApp, LinkedIn, Slack/Teams).
 // Bug fix: WhatsApp open — web.whatsapp.com on desktop; whatsapp:// on mobile portrait (native app only).
 // Update: ease-zin (kant-en-klare content) in alle share-teksten.
-// Update: campagne-copy — veiligheid op werk, anonieme hulplijn, socials-narratief (geen guerilla-framing).
+// Update: campagne-copy — brug naar 100k-beweging, hulplijn van de grond krijgen, socials-narratief.
 // Share copy for social buttons; site URL injected at runtime where noted.
 
 /** Link shown in share modals and appended to copied messages. */
@@ -19,45 +19,40 @@ const SOCIAL_HASHTAGS =
 
 export const OPENING_COPY = "Hoe veilig voel jij je écht op je werk?";
 
-export const SILENCE_COPY =
-  "Veel mensen zwijgen bij HR uit angst voor hun baan of promotie, maar delen dit uit schaamte ook niet met vrienden of familie.";
-
-export const COLLEAGUES_COPY =
-  "En dat terwijl je vanaf je 20e tot je pensioen de meeste tijd doorbrengt met collega's.";
+export const CONTEXT_COPY =
+  "Veel mensen zwijgen bij HR uit angst voor hun baan of promotie, maar delen dit uit schaamte ook niet met vrienden of familie. En dat terwijl je vanaf je 20e tot je pensioen de meeste tijd doorbrengt met collega's.";
 
 export const LAUNCH_COPY =
   "Deze week openen we De Werktelefoon: een onafhankelijke, anonieme hulplijn die je actief advies geeft om dit op te lossen.";
 
-export const CAMPAIGN_BEFORE_STAT = "Samen met";
+export const MOVEMENT_BEFORE_STAT =
+  "Om deze hulplijn succesvol van de grond te krijgen en zichtbaar te maken voor iedereen die er baat bij heeft, hebben we jouw hulp nodig. Ons doel is om een landelijke beweging te starten: samen met";
 
-export const CAMPAIGN_AFTER_STAT = "werkveranderaars kleuren we de socials.";
+export const MOVEMENT_AFTER_STAT =
+  "werkveranderaars kleuren we de socials, zodat niemand meer in stilte hoeft te worstelen.";
 
-export const BELIEF_CTA_COPY = "Geloof jij dat werk veiliger kan?";
+export const BELIEF_CTA_COPY = "Geloof jij ook dat werk veiliger kan?";
 
 export const NETWORK_ASK_LINE_1 = "Deel dit bericht met 1 of 2 mensen.";
 
 export const SHARE_EASE_COPY =
-  "Op onze website vind je kant-en-klare content.";
+  "Op onze website vind je kant-en-klare content om direct te delen.";
 
 export const CLOSING_COPY = "Laten we de werkvloer samen veiliger maken.";
 
-export const CORE_CAMPAIGN = `${CAMPAIGN_BEFORE_STAT} 100.000 ${CAMPAIGN_AFTER_STAT}`;
+export const CORE_MOVEMENT = `${MOVEMENT_BEFORE_STAT} 100.000 ${MOVEMENT_AFTER_STAT}`;
 
 const CORE_NARRATIVE = `${OPENING_COPY}
 
-${SILENCE_COPY}
-
-${COLLEAGUES_COPY}
+${CONTEXT_COPY}
 
 ${LAUNCH_COPY}
 
-${CORE_CAMPAIGN}
+${CORE_MOVEMENT}
 
 ${BELIEF_CTA_COPY}`;
 
-const NETWORK_ASK_COPY = `${NETWORK_ASK_LINE_1}
-
-${SHARE_EASE_COPY}
+const NETWORK_ASK_COPY = `${NETWORK_ASK_LINE_1} ${SHARE_EASE_COPY}
 
 ${CLOSING_COPY}`;
 
