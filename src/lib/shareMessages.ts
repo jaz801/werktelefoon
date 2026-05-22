@@ -3,12 +3,12 @@
 // Update: IG/TikTok/Snap, LinkedIn en Slack/Teams copy-paste teksten (guerilla-campagne).
 // Update: netwerk/content-zinnen in LinkedIn + Slack; €1,99-regels uit alle share-teksten.
 // Update: IG/TikTok/Snap — expliciet dat 100k alleen lukt als iedereen deelt in ieders netwerk.
-// Update: zachtere netwerk-CTA — jouw netwerk nodig, delen met 1–2 personen of in groep.
+// Update: zachtere netwerk-CTA — delen met 1–2 mensen.
 // Update: rebrand link → https://rebrand.ly/werktelefoon (all channels + kopieer-link knop).
 // Update: “guerilla campagne” formulering (WhatsApp, LinkedIn, Slack/Teams).
 // Bug fix: WhatsApp open — web.whatsapp.com on desktop; whatsapp:// on mobile portrait (native app only).
-// Update: ease-zin (voorgeschreven berichten + content) in alle share-teksten.
-// Update: campagne-copy — “hoeveel procent dit jaar”, Werktelefoon-tagline, socials-narratief (geen guerilla-framing).
+// Update: ease-zin (kant-en-klare content) in alle share-teksten.
+// Update: campagne-copy — veiligheid op werk, anonieme hulplijn, socials-narratief (geen guerilla-framing).
 // Share copy for social buttons; site URL injected at runtime where noted.
 
 /** Link shown in share modals and appended to copied messages. */
@@ -17,52 +17,49 @@ export const SHARE_SITE_URL = "https://rebrand.ly/werktelefoon";
 const SOCIAL_HASHTAGS =
   "#werktelefoon #guerillacampagne #takeover #werkveranderaars #werkveranderaar";
 
-export const OPENING_BEFORE_STAT =
-  "Hoeveel procent van de tijd voelde je je dit jaar écht goed op je werk?";
+export const OPENING_COPY = "Hoe veilig voel jij je écht op je werk?";
 
-export const OPENING_STAT_LEAD = "De meeste mensen komen niet verder dan";
+export const SILENCE_COPY =
+  "Veel mensen zwijgen bij HR uit angst voor hun baan of promotie, maar delen dit uit schaamte ook niet met vrienden of familie.";
 
-export const POSSIBILITY_COPY =
-  "Moet je nagaan wat er voor onszelf, organisaties en de wereld mogelijk is als we dit percentage samen verhogen.";
+export const COLLEAGUES_COPY =
+  "En dat terwijl je vanaf je 20e tot je pensioen de meeste tijd doorbrengt met collega's.";
 
-export const CAMPAIGN_BEFORE_STAT =
-  "Daarom kleuren we deze week de socials. In 7 dagen zetten we samen met";
+export const LAUNCH_COPY =
+  "Deze week openen we De Werktelefoon: een onafhankelijke, anonieme hulplijn die je actief advies geeft om dit op te lossen.";
 
-export const CAMPAIGN_AFTER_STAT =
-  "werkveranderaars de lijnen van De Werktelefoon open.";
+export const CAMPAIGN_BEFORE_STAT = "Samen met";
 
-export const WERKTELEFOON_TAGLINE =
-  "De Werktelefoon is een onafhankelijke plek voor iedereen die werkt, waar je altijd terecht kan.";
+export const CAMPAIGN_AFTER_STAT = "werkveranderaars kleuren we de socials.";
 
-export const BELIEF_CTA_COPY =
-  "Als ook jij gelooft dat werk anders kan, wil je hier bij zijn.";
+export const BELIEF_CTA_COPY = "Geloof jij dat werk veiliger kan?";
 
-export const CORE_OPENING = `${OPENING_BEFORE_STAT} ${OPENING_STAT_LEAD} 5%.`;
+export const NETWORK_ASK_LINE_1 = "Deel dit bericht met 1 of 2 mensen.";
 
-export const CORE_CAMPAIGN = `${CAMPAIGN_BEFORE_STAT} 100.000 ${CAMPAIGN_AFTER_STAT} ${WERKTELEFOON_TAGLINE}`;
+export const SHARE_EASE_COPY =
+  "Op onze website vind je kant-en-klare content.";
 
-const CORE_NARRATIVE = `${CORE_OPENING}
+export const CLOSING_COPY = "Laten we de werkvloer samen veiliger maken.";
 
-${POSSIBILITY_COPY}
+export const CORE_CAMPAIGN = `${CAMPAIGN_BEFORE_STAT} 100.000 ${CAMPAIGN_AFTER_STAT}`;
+
+const CORE_NARRATIVE = `${OPENING_COPY}
+
+${SILENCE_COPY}
+
+${COLLEAGUES_COPY}
+
+${LAUNCH_COPY}
 
 ${CORE_CAMPAIGN}
 
 ${BELIEF_CTA_COPY}`;
 
-export const NETWORK_ASK_LINE_1 =
-  "Om dit te halen hebben we jouw netwerk nodig.";
-
-export const NETWORK_ASK_LINE_2 =
-  "Als jij dit kunt delen met 1 of 2 personen, of in een groep, help je ons enorm.";
-
-export const SHARE_EASE_COPY =
-  "Om het jou zo makkelijk mogelijk te maken hebben we op de website voorgeschreven berichten en content gemaakt.";
-
 const NETWORK_ASK_COPY = `${NETWORK_ASK_LINE_1}
 
-${NETWORK_ASK_LINE_2}
+${SHARE_EASE_COPY}
 
-${SHARE_EASE_COPY}`;
+${CLOSING_COPY}`;
 
 const INSTAGRAM_TIKTOK_SNAP_COPY = `${CORE_NARRATIVE}
 
